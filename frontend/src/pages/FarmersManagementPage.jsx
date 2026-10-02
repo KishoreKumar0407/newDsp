@@ -178,8 +178,66 @@ export default function FarmersManagementPage() {
   const totalBorewells = farmers.reduce((sum, f) => sum + (f.borewells_count || 1), 0)
   const totalCCTVs = farmers.reduce((sum, f) => sum + (f.cctv_count || 1), 0)
 
+  // Marketplace Orders for Admin
+  const [adminOrdersOpen, setAdminOrdersOpen] = useState(false)
+  const allMarketplaceOrders = farmStorage.getMarketplaceOrders()
+
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 text-slate-900 dark:text-slate-100 transition-colors duration-200">
+
+      {/* ── Admin Orders Inbox Drawer ── */}
+      {adminOrdersOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setAdminOrdersOpen(false)} />
+          <div className="w-full max-w-lg bg-white dark:bg-[#120326] h-full shadow-2xl relative z-10 flex flex-col border-l border-gray-200 dark:border-gray-800">
+            <div className="p-5 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center bg-v2v-deep text-white">
+              <h2 className="text-lg font-black flex items-center gap-2">
+                📋 Marketplace Orders — Admin View
+                {allMarketplaceOrders.length > 0 && (
+                  <span className="bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{allMarketplaceOrders.length}</span>
+                )}
+              </h2>
+              <button onClick={() => setAdminOrdersOpen(false)} className="text-2xl hover:text-rose-400">×</button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+              {allMarketplaceOrders.length === 0 ? (
+                <div className="text-center text-gray-500 mt-20">
+                  <div className="text-5xl mb-3">📭</div>
+                  <p className="font-semibold">No marketplace orders yet.</p>
+                  <p className="text-xs mt-1">Consumer and dealer orders will appear here once placed.</p>
+                </div>
+              ) : (
+                allMarketplaceOrders.map(order => (
+                  <div key={order.id} className="p-4 rounded-xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 shadow-sm">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${order.type === 'consumer_order' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}`}>
+                        {order.type === 'consumer_order' ? '🛒 Consumer Order' : '🏢 Dealer Supply Dispatch'}
+                      </span>
+                      <span className="text-[10px] text-gray-400">{new Date(order.timestamp).toLocaleString('en-IN')}</span>
+                    </div>
+                    <div className="font-bold text-sm mb-1">{order.itemName}</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                      <div className="grid grid-cols-2 gap-1">
+                        <div>👤 Buyer: <strong>{order.buyerName}</strong></div>
+                        <div>🧑‍🌾 Farmer: <strong>{order.farmerName}</strong></div>
+                        <div>📦 Qty: <strong>{order.quantity} {order.unit}</strong></div>
+                        {order.totalPrice && <div>💰 Value: <strong>₹{order.totalPrice?.toLocaleString()}</strong></div>}
+                        {order.deliveryArea && <div>📍 Deliver to: <strong>{order.deliveryArea}</strong></div>}
+                        {order.paymentMethod && <div>💳 Payment: <strong>{order.paymentMethod}</strong></div>}
+                      </div>
+                    </div>
+                    <div className="mt-3 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-300">{order.status}</span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Top Admin Header ── */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
@@ -196,6 +254,19 @@ export default function FarmersManagementPage() {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Marketplace Orders Button */}
+          <button
+            onClick={() => setAdminOrdersOpen(true)}
+            className="relative btn-secondary text-xs sm:text-sm px-4 py-2.5 rounded-xl flex items-center gap-2 transition-all border-blue-300 text-blue-700 hover:bg-blue-50"
+          >
+            <span>📋</span>
+            <span>Marketplace Orders</span>
+            {allMarketplaceOrders.length > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                {allMarketplaceOrders.length}
+              </span>
+            )}
+          </button>
           <button
             onClick={() => setShowScratchMapModal(true)}
             className="btn-v2v-gradient text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-md flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all"

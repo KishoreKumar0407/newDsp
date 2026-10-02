@@ -93,6 +93,8 @@ export default function LoginPage() {
         navigate('/farmer', { replace: true })
       } else if (user.role === 'admin' || user.role === 'verifier') {
         navigate('/admin/farmers', { replace: true })
+      } else if (user.role === 'consumer' || user.role === 'dealer') {
+        navigate('/marketplace', { replace: true })
       } else {
         navigate('/dashboard', { replace: true })
       }
@@ -136,6 +138,8 @@ export default function LoginPage() {
           navigate('/farmer', { replace: true })
         } else if (matchedCred.role === 'admin') {
           navigate('/admin/farmers', { replace: true })
+        } else if (matchedCred.role === 'consumer' || matchedCred.role === 'dealer') {
+          navigate('/marketplace', { replace: true })
         } else {
           navigate('/dashboard', { replace: true })
         }
@@ -160,8 +164,11 @@ export default function LoginPage() {
 
       // Fallback demo authentication for non-farmer roles
       const loggedUser = await login(loginForm.email, loginForm.password)
-      if (loggedUser?.role === 'admin' || selectedRole === 'admin') {
+      const role = loggedUser?.role || selectedRole
+      if (role === 'admin' || role === 'verifier') {
         navigate('/admin/farmers', { replace: true })
+      } else if (role === 'consumer' || role === 'dealer') {
+        navigate('/marketplace', { replace: true })
       } else {
         navigate(from ?? '/dashboard', { replace: true })
       }
@@ -270,7 +277,7 @@ export default function LoginPage() {
     }
   }
 
-  const targetHomePath = user ? (user.role === 'farmer' ? '/farmer' : (user.role === 'admin' || user.role === 'verifier' ? '/admin/farmers' : '/dashboard')) : '/'
+  const targetHomePath = user ? (user.role === 'farmer' ? '/farmer' : (user.role === 'admin' || user.role === 'verifier' ? '/admin/farmers' : (user.role === 'consumer' || user.role === 'dealer' ? '/marketplace' : '/dashboard'))) : '/'
 
   const handleGoBack = (e) => {
     if (e) e.preventDefault()

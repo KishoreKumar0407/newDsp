@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { to: '/admin/farmers',  label: 'Farmers Directory',      icon: UsersIcon,  roles: ['admin', 'verifier'] },
   { to: '/admin/editor/field-1', label: 'Land & Drawing Editor', icon: EditIcon, roles: ['admin', 'verifier'] },
   { to: '/dashboard',      label: 'Platform Overview',      icon: HomeIcon,   roles: ['admin', 'verifier'] },
+  { to: '/marketplace',    label: 'Marketplace Hub',        icon: StoreIcon,  roles: ['consumer', 'dealer', 'admin'] },
   { to: '/data-tools',     label: 'Export & Reports',       icon: UploadIcon, roles: ['admin', 'verifier'] },
   { to: '/users',          label: 'System Access',          icon: KeyIcon,    roles: ['admin'] },
 ]
@@ -25,7 +26,7 @@ export default function AppLayout() {
 
   const currentRole = user?.role || 'farmer'
   const visibleLinks = NAV_LINKS.filter(l => l.roles.includes(currentRole))
-  const homeLink = currentRole === 'farmer' ? '/farmer' : (currentRole === 'admin' || currentRole === 'verifier' ? '/admin/farmers' : '/dashboard')
+  const homeLink = currentRole === 'farmer' ? '/farmer' : (currentRole === 'admin' || currentRole === 'verifier' ? '/admin/farmers' : (currentRole === 'consumer' || currentRole === 'dealer' ? '/marketplace' : '/dashboard'))
 
   const handleGoBack = (e) => {
     if (e) e.preventDefault()
@@ -49,6 +50,7 @@ export default function AppLayout() {
     loginDemo(newRole)
     if (newRole === 'farmer') navigate('/farmer')
     else if (newRole === 'admin' || newRole === 'verifier') navigate('/admin/farmers')
+    else if (newRole === 'consumer' || newRole === 'dealer') navigate('/marketplace')
     else navigate('/dashboard')
   }
 
@@ -288,6 +290,13 @@ function MenuIcon({ className }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  )
+}
+function StoreIcon({ className }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
     </svg>
   )
 }

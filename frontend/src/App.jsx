@@ -15,6 +15,7 @@ import MapViewPage from './pages/MapViewPage'
 import IoTDashboardPage from './pages/IoTDashboardPage'
 import DataToolsPage from './pages/DataToolsPage'
 import UsersPage from './pages/UsersPage'
+import MarketplacePage from './pages/MarketplacePage'
 
 // Layout
 import AppLayout from './components/layout/AppLayout'
@@ -34,6 +35,7 @@ export default function App() {
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
+              <Route path="/marketplace" element={<MarketplacePage />} />
               {/* Farmer Portal: Dedicated interactive farmland map (farmer, admin, verifier) */}
               <Route path="/farmer" element={<FarmerDashboardPage />} />
 

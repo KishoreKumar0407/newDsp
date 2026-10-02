@@ -94,6 +94,20 @@ export function AuthProvider({ children }) {
         full_name: 'V2V Cadastral Land Verifier',
         email: 'verifier@v2vtech.com',
       }
+    } else if (role === 'consumer') {
+      mockUser = {
+        id: 'demo-consumer-1',
+        role: 'consumer',
+        full_name: 'Consumer User',
+        email: 'consumer@farmxt.com',
+      }
+    } else if (role === 'dealer') {
+      mockUser = {
+        id: 'demo-dealer-1',
+        role: 'dealer',
+        full_name: 'Dealer User',
+        email: 'dealer@farmxt.com',
+      }
     }
 
     const finalUser = { ...mockUser, ...customDetails }
@@ -113,6 +127,12 @@ export function AuthProvider({ children }) {
     }
     if (cleanEmail.includes('verifier')) {
       return loginDemo('verifier')
+    }
+    if (cleanEmail.includes('consumer')) {
+      return loginDemo('consumer')
+    }
+    if (cleanEmail.includes('dealer')) {
+      return loginDemo('dealer')
     }
     if (cleanEmail.includes('farmer')) {
       return loginDemo('farmer')
@@ -148,6 +168,12 @@ export function AuthProvider({ children }) {
       }
       if (cleanEmail.includes('verifier')) {
         return loginDemo('verifier')
+      }
+      if (cleanEmail.includes('consumer')) {
+        return loginDemo('consumer', { email, full_name: email.split('@')[0] })
+      }
+      if (cleanEmail.includes('dealer')) {
+        return loginDemo('dealer', { email, full_name: email.split('@')[0] })
       }
       return loginDemo('farmer', { email, full_name: email.split('@')[0] })
     }

@@ -525,8 +525,70 @@ export default function FarmerDashboardPage() {
     }
   }
 
+  // ── Marketplace Orders for this farmer ──
+  const farmerOrders = React.useMemo(() => {
+    const allOrders = farmStorage.getMarketplaceOrders()
+    const farmerName = currentFarmer?.full_name || ''
+    return allOrders.filter(o =>
+      farmerName && o.farmerName &&
+      o.farmerName.toLowerCase().includes(farmerName.split(' ')[0]?.toLowerCase() || '')
+    )
+  }, [currentFarmer])
+
+  const [ordersInboxOpen, setOrdersInboxOpen] = React.useState(false)
+
   return (
     <div className="flex flex-col h-full bg-v2v-softwhite overflow-hidden relative">
+      {/* ── Orders Inbox Drawer ── */}
+      {ordersInboxOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setOrdersInboxOpen(false)} />
+          <div className="w-full max-w-md bg-white dark:bg-[#120326] h-full shadow-2xl relative z-10 flex flex-col border-l border-gray-200 dark:border-gray-800">
+            <div className="p-5 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center bg-emerald-50 dark:bg-emerald-900/20">
+              <h2 className="text-lg font-black text-emerald-900 dark:text-emerald-100 flex items-center gap-2">
+                📦 Orders Inbox
+                {farmerOrders.length > 0 && (
+                  <span className="bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{farmerOrders.length}</span>
+                )}
+              </h2>
+              <button onClick={() => setOrdersInboxOpen(false)} className="text-2xl hover:text-rose-500">×</button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+              {farmerOrders.length === 0 ? (
+                <div className="text-center text-gray-500 mt-20">
+                  <div className="text-5xl mb-3">📭</div>
+                  <p className="font-semibold">No orders yet.</p>
+                  <p className="text-xs mt-1">Orders from consumers & dealers will appear here.</p>
+                </div>
+              ) : (
+                farmerOrders.map(order => (
+                  <div key={order.id} className="p-4 rounded-xl border bg-white dark:bg-gray-900 border-emerald-200 dark:border-emerald-800/50 shadow-sm">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${order.type === 'consumer_order' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}`}>
+                        {order.type === 'consumer_order' ? '🛒 Consumer Order' : '🏢 Dealer Supply'}
+                      </span>
+                      <span className="text-[10px] text-gray-400">{new Date(order.timestamp).toLocaleString('en-IN')}</span>
+                    </div>
+                    <div className="font-bold text-sm mb-1">{order.itemName}</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                      <div>👤 From: <strong>{order.buyerName}</strong> ({order.buyerRole})</div>
+                      <div>📦 Qty: <strong>{order.quantity} {order.unit}</strong></div>
+                      {order.totalPrice && <div>💰 Total: <strong>₹{order.totalPrice?.toLocaleString()}</strong></div>}
+                      {order.deliveryArea && <div>📍 Deliver to: <strong>{order.deliveryArea}</strong></div>}
+                      {order.paymentMethod && <div>💳 Payment: <strong>{order.paymentMethod}</strong></div>}
+                    </div>
+                    <div className="mt-3 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-300">{order.status}</span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Top Header / Farm Selector & Quick Bar ── */}
       <div className="bg-white border-b border-v2v-lavendergray px-4 py-2.5 sm:px-6 flex flex-wrap items-center justify-between gap-3 flex-shrink-0 z-20 shadow-sm">
         <div className="flex items-center gap-3">
@@ -591,6 +653,21 @@ export default function FarmerDashboardPage() {
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span>3-Phase Grid Active</span>
           </div>
+
+          {/* Orders Inbox Button */}
+          <button
+            onClick={() => setOrdersInboxOpen(true)}
+            className="relative flex items-center gap-1.5 bg-blue-50 text-blue-800 border border-blue-200 px-2.5 py-1 rounded-lg text-xs font-bold hover:bg-blue-100 transition-colors shadow-sm"
+            title="View incoming orders from consumers and dealers"
+          >
+            <span>📦</span>
+            <span>Orders Inbox</span>
+            {farmerOrders.length > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                {farmerOrders.length}
+              </span>
+            )}
+          </button>
 
           <button
             onClick={() => setShowScratchModal(true)}

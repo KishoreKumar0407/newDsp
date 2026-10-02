@@ -551,6 +551,23 @@ export const farmStorage = {
     }
 
     return match || null
+  },
+
+  // 📦 Marketplace Orders
+  getMarketplaceOrders: () => {
+    return getStoredOrInit('farmxt_marketplace_orders_v1', [])
+  },
+
+  saveMarketplaceOrder: (order) => {
+    const orders = farmStorage.getMarketplaceOrders()
+    const newOrder = {
+      id: `order-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      ...order
+    }
+    const updated = [newOrder, ...orders]
+    localStorage.setItem('farmxt_marketplace_orders_v1', JSON.stringify(updated))
+    return newOrder
   }
 }
 
