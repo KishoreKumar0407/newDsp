@@ -16,11 +16,29 @@ import {
   isValidLatLng,
   extractBoundaryLatLngs,
 } from '../lib/geoUtils'
+import { parseCoordinates } from '../lib/coordinateParser'
+import { useNavigateWithLoader } from '../contexts/NavigationLoaderContext'
 
-// ── Auto-Fit Bounds Component ─────────────────────────────────────────────
-function FitBounds({ geojson, focusCoords }) {
+// ── Fly to Target Coordinate Controller ────────────────────────────────────
+function CoordinateFlyController({ targetCoord }) {
   const map = useMap()
   useEffect(() => {
+    if (!targetCoord) return
+    try {
+      map.flyTo([targetCoord.lat, targetCoord.lng], 18, {
+        animate: true,
+        duration: 1.5,
+      })
+    } catch { /* ignore */ }
+  }, [targetCoord, map])
+  return null
+}
+
+// ── Auto-Fit Bounds Component ─────────────────────────────────────────────
+function FitBounds({ geojson, focusCoords, targetCoord }) {
+  const map = useMap()
+  useEffect(() => {
+    if (targetCoord) return // Skip bounds fitting when user explicitly navigates to a coordinate
     if (focusCoords && focusCoords.length >= 3 && focusCoords.every(isValidLatLng)) {
       try {
         const bounds = L.latLngBounds(focusCoords)
@@ -37,7 +55,7 @@ function FitBounds({ geojson, focusCoords }) {
       const bounds = layer.getBounds()
       if (bounds.isValid()) map.fitBounds(bounds, { padding: [50, 50], maxZoom: 18 })
     } catch { /* ignore */ }
-  }, [geojson, focusCoords, map])
+  }, [geojson, focusCoords, targetCoord, map])
   return null
 }
 
@@ -106,6 +124,34 @@ export default function AdminLandEditorPage() {
     yesterday_liters: '31200',
     camera_model: 'V2V Solar PTZ 4K UltraHD Sentinel',
   })
+
+  // ── Admin Coordinate Navigation State ──
+  const [coordInput, setCoordInput] = useState('')
+  const [coordError, setCoordError] = useState('')
+  const [targetLocation, setTargetLocation] = useState(null)
+  const { startLoader } = useNavigateWithLoader()
+
+  const handleCoordinateGo = (e) => {
+    if (e && e.preventDefault) e.preventDefault()
+    setCoordError('')
+
+    const parsed = parseCoordinates(coordInput)
+    if (!parsed.ok) {
+      setCoordError(parsed.error)
+      return
+    }
+
+    // Trigger loader, then fly to the location
+    startLoader(`Flying to coordinates ${parsed.lat.toFixed(5)}, ${parsed.lng.toFixed(5)}...`, 1200, () => {
+      setTargetLocation({
+        lat: parsed.lat,
+        lng: parsed.lng,
+        formatted: parsed.formatted,
+        dms: parsed.dms,
+      })
+      toast.success(`📍 Map relocated to ${parsed.lat}, ${parsed.lng}`)
+    })
+  }
 
   // Load field GeoJSON and Farmers
   useEffect(() => {
@@ -373,6 +419,42 @@ export default function AdminLandEditorPage() {
         </div>
 
         <div className="flex items-center gap-2.5 flex-wrap">
+          {/* Admin "Go to location" input (DMS & Decimal support) */}
+          <form
+            onSubmit={handleCoordinateGo}
+            className="relative flex items-center gap-1.5 bg-v2v-softwhite dark:bg-slate-800 border border-v2v-lavendergray dark:border-slate-700 px-2 py-1 rounded-xl shadow-inner"
+          >
+            <span className="text-xs text-v2v-purple dark:text-purple-300 font-bold select-none">
+              🧭
+            </span>
+            <input
+              type="text"
+              value={coordInput}
+              onChange={(e) => {
+                setCoordInput(e.target.value)
+                if (coordError) setCoordError('')
+              }}
+              placeholder='Go to location (e.g. 9°34&apos;03.0"N 77°40&apos;44.8"E or 9.5675, 77.679111)'
+              className="bg-transparent text-xs w-48 sm:w-64 focus:outline-none text-slate-800 dark:text-slate-100 placeholder:text-gray-400 font-mono"
+              aria-label="Go to location coordinates"
+            />
+            <button
+              type="submit"
+              className="btn-v2v-gradient text-xs py-1 px-2.5 rounded-lg font-bold shadow-sm hover:scale-105 active:scale-95 transition-all"
+              title="Navigate to coordinate"
+            >
+              Go
+            </button>
+            {coordError && (
+              <div
+                role="alert"
+                className="absolute top-full left-0 mt-1 z-30 bg-rose-50 dark:bg-rose-950/90 text-rose-600 dark:text-rose-300 text-[11px] font-semibold px-2.5 py-1 rounded-lg border border-rose-300 dark:border-rose-800 shadow-md whitespace-nowrap"
+              >
+                ⚠️ {coordError}
+              </div>
+            )}
+          </form>
+
           {/* Farmer Switcher Dropdown */}
           <div className="flex items-center gap-1.5 text-xs bg-v2v-softwhite border border-v2v-lavendergray px-2.5 py-1.5 rounded-lg">
             <span className="text-gray-400 font-medium">Farm:</span>
@@ -562,7 +644,51 @@ export default function AdminLandEditorPage() {
               )}
 
               {/* Auto-fit bounds */}
-              {geojson && <FitBounds geojson={geojson} focusCoords={boundaryPoints} />}
+              {geojson && <FitBounds geojson={geojson} focusCoords={boundaryPoints} targetCoord={targetLocation} />}
+
+              {/* Fly to searched coordinates */}
+              {targetLocation && <CoordinateFlyController targetCoord={targetLocation} />}
+
+              {/* Target coordinate marker with popup */}
+              {targetLocation && (
+                <Marker
+                  position={[targetLocation.lat, targetLocation.lng]}
+                  icon={createPinIcon('🎯', '#8A57C0')}
+                >
+                  <Popup autoPan={true}>
+                    <div className="text-xs p-1 space-y-1.5 min-w-[200px]">
+                      <div className="flex items-center gap-1.5 font-bold text-v2v-deep">
+                        <span>🎯</span>
+                        <span>Selected Location</span>
+                      </div>
+                      <div className="bg-purple-50 p-2 rounded-lg border border-purple-200/60 font-mono text-[11px] text-purple-950 space-y-0.5">
+                        <div><strong>Decimal:</strong> {targetLocation.lat.toFixed(6)}, {targetLocation.lng.toFixed(6)}</div>
+                        <div><strong>DMS:</strong> {targetLocation.dms}</div>
+                      </div>
+                      <div className="flex items-center justify-between pt-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setBoundaryPoints(prev => [...prev, [targetLocation.lat, targetLocation.lng]])
+                            setHasUnsavedBoundary(true)
+                            toast.success(`Corner #${boundaryPoints.length + 1} added from coordinates!`)
+                          }}
+                          className="px-2 py-1 bg-v2v-deep text-white rounded text-[10px] font-bold hover:bg-v2v-purple"
+                        >
+                          + Add as Boundary Point
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setTargetLocation(null)}
+                          className="text-gray-400 hover:text-rose-500 text-[10px]"
+                        >
+                          Clear
+                        </button>
+                      </div>
+                    </div>
+                  </Popup>
+                </Marker>
+              )}
 
               {/* Map Click Event Handler */}
               <MapEventsController
