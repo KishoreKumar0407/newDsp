@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
+import { useNavigateWithLoader } from '../../contexts/NavigationLoaderContext'
 import V2VLogo from '../common/V2VLogo'
 import ThemeToggle from '../common/ThemeToggle'
 
@@ -17,6 +18,7 @@ const NAV_LINKS = [
 export default function AppLayout() {
   const { user, loginDemo, logout } = useAuth()
   const navigate = useNavigate()
+  const { navigateBackWithLoader, navigateHomeWithLoader, navigateWithLoader, getStartingPage } = useNavigateWithLoader()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const handleLogout = () => {
@@ -26,15 +28,17 @@ export default function AppLayout() {
 
   const currentRole = user?.role || 'farmer'
   const visibleLinks = NAV_LINKS.filter(l => l.roles.includes(currentRole))
-  const homeLink = currentRole === 'farmer' ? '/farmer' : (currentRole === 'admin' || currentRole === 'verifier' ? '/admin/farmers' : (currentRole === 'consumer' || currentRole === 'dealer' ? '/marketplace' : '/dashboard'))
+  const homeLink = getStartingPage()
 
   const handleGoBack = (e) => {
-    if (e) e.preventDefault()
-    if (window.history.state && typeof window.history.state.idx === 'number' && window.history.state.idx > 0) {
-      navigate(-1)
-    } else {
-      navigate(homeLink || '/')
-    }
+    if (e && e.preventDefault) e.preventDefault()
+    navigateBackWithLoader(homeLink, 'Returning to previous page...', 1000)
+  }
+
+  const handleLogoClick = (e) => {
+    if (e && e.preventDefault) e.preventDefault()
+    setSidebarOpen(false)
+    navigateHomeWithLoader('Opening Dashboard...', 1200)
   }
 
   const handleRoleSwitch = (newRole) => {
@@ -61,13 +65,25 @@ export default function AppLayout() {
         className={`fixed inset-y-0 left-0 z-40 w-64 bg-v2v-nearblack dark:bg-slate-900 text-white flex flex-col border-r border-v2v-secondary/30 dark:border-slate-800 transform transition-transform duration-200
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:z-auto`}
       >
-        {/* Logo Header Container (Clickable -> http://localhost:5173/) */}
-        <Link to="/" className="px-5 py-4 border-b border-v2v-secondary/30 dark:border-slate-800 flex items-center justify-between hover:opacity-90 transition-opacity cursor-pointer group">
-          <V2VLogo size="md" variant="light" />
+        {/* Logo Header Container (Clickable -> Starting Page / Dashboard) */}
+        <div
+          role="link"
+          tabIndex={0}
+          aria-label="Go to home"
+          onClick={handleLogoClick}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              handleLogoClick(e)
+            }
+          }}
+          className="px-5 py-4 border-b border-v2v-secondary/30 dark:border-slate-800 flex items-center justify-between hover:opacity-90 transition-opacity cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-v2v-purple"
+        >
+          <V2VLogo size="md" variant="light" onClick={handleLogoClick} />
           <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-v2v-deep dark:bg-slate-800 text-v2v-lavender dark:text-purple-300 border border-v2v-lavender/30 dark:border-slate-700 uppercase group-hover:border-purple-400">
             DSP
           </span>
-        </Link>
+        </div>
 
         {/* Mode Switcher & Theme Option */}
         <div className="px-3 pt-3">
@@ -204,19 +220,25 @@ export default function AppLayout() {
             >
               <MenuIcon className="w-5 h-5" />
             </button>
-            <Link to="/" className="lg:hidden">
-              <V2VLogo size="sm" />
-            </Link>
-            <Link to="/" className="hidden lg:flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-v2v-purple dark:hover:text-purple-300 transition-colors">
+            <div className="lg:hidden">
+              <V2VLogo size="sm" onClick={handleLogoClick} />
+            </div>
+            <button
+              type="button"
+              onClick={handleLogoClick}
+              className="hidden lg:flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-v2v-purple dark:hover:text-purple-300 transition-colors focus:outline-none"
+              aria-label="Go to home"
+            >
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               <span>AgriMap DSP Platform</span>
-            </Link>
+            </button>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={handleGoBack}
               className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-v2v-purple hover:text-white dark:hover:bg-purple-900/60 dark:hover:text-purple-200 border border-slate-200 dark:border-slate-700 transition-all shadow-sm cursor-pointer"
               title="Go to previous page"
+              aria-label="Go Back"
             >
               <span className="text-sm font-black">←</span>
               <span>Go Back</span>
