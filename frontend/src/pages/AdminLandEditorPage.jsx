@@ -422,10 +422,10 @@ export default function AdminLandEditorPage() {
           {/* Admin "Go to location" input (DMS & Decimal support) */}
           <form
             onSubmit={handleCoordinateGo}
-            className="relative flex items-center gap-1.5 bg-v2v-softwhite dark:bg-slate-800 border border-v2v-lavendergray dark:border-slate-700 px-2 py-1 rounded-xl shadow-inner"
+            className="relative flex items-center gap-1.5 bg-v2v-softwhite dark:bg-slate-800 border border-v2v-lavendergray dark:border-slate-700 px-2.5 py-1 rounded-xl shadow-inner"
           >
             <span className="text-xs text-v2v-purple dark:text-purple-300 font-bold select-none">
-              🧭
+              📍
             </span>
             <input
               type="text"
@@ -440,7 +440,7 @@ export default function AdminLandEditorPage() {
             />
             <button
               type="submit"
-              className="btn-v2v-gradient text-xs py-1 px-2.5 rounded-lg font-bold shadow-sm hover:scale-105 active:scale-95 transition-all"
+              className="btn-v2v-gradient text-xs py-1 px-3 rounded-lg font-bold shadow-sm hover:scale-105 active:scale-95 transition-all"
               title="Navigate to coordinate"
             >
               Go
@@ -450,7 +450,7 @@ export default function AdminLandEditorPage() {
                 role="alert"
                 className="absolute top-full left-0 mt-1 z-30 bg-rose-50 dark:bg-rose-950/90 text-rose-600 dark:text-rose-300 text-[11px] font-semibold px-2.5 py-1 rounded-lg border border-rose-300 dark:border-rose-800 shadow-md whitespace-nowrap"
               >
-                ⚠️ {coordError}
+                {coordError}
               </div>
             )}
           </form>
@@ -479,7 +479,7 @@ export default function AdminLandEditorPage() {
             className="btn-v2v-gradient text-xs py-1.5 px-3 rounded-lg flex items-center gap-1.5 hover-pop font-bold shadow-sm"
             title="Start Map From Scratch & Digitize Farmland & Sub-Plots"
           >
-            <span>🗺️</span>
+            <span>📐</span>
             <span>Digitize From Scratch</span>
           </button>
 
@@ -487,15 +487,15 @@ export default function AdminLandEditorPage() {
             onClick={handleOpenAddDevice}
             className="btn-secondary text-xs py-1.5 px-3 rounded-lg flex items-center gap-1.5 hover-pop font-semibold"
           >
-            <span>➕</span>
+            <span>＋</span>
             <span>Add Device</span>
           </button>
 
           <button
             onClick={() => navigate('/farmer')}
-            className="btn-outline text-xs py-1.5 px-3 rounded-lg flex items-center gap-1 hover-pop font-bold"
+            className="btn-outline text-xs py-1.5 px-3 rounded-lg flex items-center gap-1.5 hover-pop font-bold"
           >
-            <span>🚜</span>
+            <span>🌾</span>
             <span>Farmer View →</span>
           </button>
         </div>
@@ -514,7 +514,7 @@ export default function AdminLandEditorPage() {
             }`}
           >
             <span>🗺️</span>
-            <span>Interactive Boundary Editor</span>
+            <span>Boundary Editor</span>
             {hasUnsavedBoundary && (
               <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" title="Unsaved Changes" />
             )}
@@ -528,7 +528,7 @@ export default function AdminLandEditorPage() {
                 : 'bg-v2v-softwhite text-gray-700 hover:bg-gray-200'
             }`}
           >
-            <span>📡</span>
+            <span>🛰️</span>
             <span>Field Devices & Assets ({devices.length})</span>
           </button>
         </div>

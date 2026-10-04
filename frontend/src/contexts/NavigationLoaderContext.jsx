@@ -5,33 +5,23 @@ import { useAuth } from './AuthContext'
 const NavigationLoaderContext = createContext(null)
 
 /**
- * DotsRingLoader
- * High-performance, brand-aligned loading spinner using V2V Tech purple and violet palette.
- * Built with CSS animations, accessible roles, and full respects to prefers-reduced-motion.
+ * MinimalSpinner
+ * Minimalist, ultra-clean, elegant brand loader with subtle high-contrast ring.
  */
-export function DotsRingLoader({ size = 'md', className = '' }) {
-  const sizeClasses = {
-    sm: 'w-8 h-8',
-    md: 'w-14 h-14',
-    lg: 'w-20 h-20',
-    xl: 'w-28 h-28',
-  }[size] || 'w-14 h-14'
+export function MinimalSpinner({ size = 'md', className = '' }) {
+  const sizeMap = {
+    sm: 'w-4 h-4 border-2',
+    md: 'w-6 h-6 border-2',
+    lg: 'w-8 h-8 border-[2.5px]',
+  }
+  const s = sizeMap[size] || sizeMap.md
 
   return (
     <div
       role="status"
       aria-label="Loading..."
-      className={`relative inline-flex items-center justify-center ${sizeClasses} ${className}`}
+      className={`inline-block rounded-full border-solid border-v2v-purple/20 border-t-v2v-purple animate-spin motion-reduce:animate-none ${s} ${className}`}
     >
-      {/* Outer animated gradient ring */}
-      <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-v2v-purple border-r-v2v-softlavender border-b-purple-500/20 border-l-v2v-deep animate-spin motion-reduce:animate-none" />
-      
-      {/* Middle pulsing glow */}
-      <div className="absolute inset-1.5 rounded-full border-2 border-dashed border-v2v-lavender/50 animate-[spin_3s_linear_infinite_reverse] motion-reduce:animate-none" />
-
-      {/* Inner pulsating core dot */}
-      <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-v2v-deep to-v2v-purple shadow-[0_0_12px_rgba(138,87,192,0.8)] animate-pulse" />
-
       <span className="sr-only">Loading...</span>
     </div>
   )
@@ -39,9 +29,10 @@ export function DotsRingLoader({ size = 'md', className = '' }) {
 
 /**
  * PageTransitionLoader
- * Fullscreen semi-transparent backdrop overlay with brand violet glassmorphism.
+ * Ultra-minimalist top progress bar with subtle, modern floating pill badge.
+ * Non-intrusive, extremely sleek and professional.
  */
-export function PageTransitionLoader({ isLoading, message = 'Loading workspace...' }) {
+export function PageTransitionLoader({ isLoading, message = 'Loading...' }) {
   if (!isLoading) return null
 
   return (
@@ -49,17 +40,18 @@ export function PageTransitionLoader({ isLoading, message = 'Loading workspace..
       role="alert"
       aria-busy="true"
       aria-live="polite"
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-slate-950/60 dark:bg-black/75 backdrop-blur-sm transition-all duration-300"
+      className="fixed inset-0 z-[9999] pointer-events-none flex flex-col justify-start items-center transition-opacity duration-200"
     >
-      <div className="bg-white/90 dark:bg-slate-900/90 border border-v2v-purple/30 dark:border-purple-500/30 rounded-2xl p-6 sm:p-8 flex flex-col items-center gap-4 shadow-2xl shadow-purple-950/40 text-center max-w-sm mx-4 animate-fadeIn">
-        <DotsRingLoader size="lg" />
-        <div className="flex flex-col items-center gap-1">
-          <p className="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100 font-sans tracking-wide">
-            {message}
-          </p>
-          <span className="text-xs text-v2v-purple dark:text-purple-300 font-medium font-mono">
-            V2V Tech · Digital Farmland Platform
-          </span>
+      {/* ── Top edge progress line ── */}
+      <div className="w-full h-1 bg-transparent overflow-hidden">
+        <div className="h-full bg-gradient-to-r from-v2v-deep via-v2v-purple to-purple-400 w-full animate-[pulse_1s_ease-in-out_infinite]" />
+      </div>
+
+      {/* ── Minimalist floating status pill ── */}
+      <div className="mt-4 pointer-events-auto">
+        <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-900/90 dark:bg-slate-950/95 text-white backdrop-blur-md shadow-lg border border-slate-700/50 text-xs font-medium tracking-wide animate-fadeIn">
+          <MinimalSpinner size="sm" className="border-t-purple-400" />
+          <span>{message}</span>
         </div>
       </div>
     </div>
