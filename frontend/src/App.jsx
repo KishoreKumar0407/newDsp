@@ -17,6 +17,8 @@ import DataToolsPage from './pages/DataToolsPage'
 import UsersPage from './pages/UsersPage'
 import MarketplacePage from './pages/MarketplacePage'
 
+import { NavigationLoaderProvider } from './contexts/NavigationLoaderContext'
+
 // Layout
 import AppLayout from './components/layout/AppLayout'
 import ProtectedRoute from './components/layout/ProtectedRoute'
@@ -25,6 +27,7 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <NavigationLoaderProvider>
         <Routes>
           {/* Public Gateway & Showcase */}
           <Route path="/" element={<LoginPage />} />
@@ -60,8 +63,10 @@ export default function App() {
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </NavigationLoaderProvider>
       </BrowserRouter>
     </AuthProvider>
   )
 }
+
 
