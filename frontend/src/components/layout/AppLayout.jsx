@@ -1,22 +1,34 @@
 import React, { useState } from 'react'
-import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom'
+import { Outlet, NavLink, useNavigate, Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import V2VLogo from '../common/V2VLogo'
 import ThemeToggle from '../common/ThemeToggle'
 
 const NAV_LINKS = [
-  { to: '/farmer',         label: 'Farmland Digital Twin',  icon: MapIcon,    roles: ['farmer', 'admin', 'verifier'] },
-  { to: '/admin/farmers',  label: 'Farmers Directory',      icon: UsersIcon,  roles: ['admin', 'verifier'] },
-  { to: '/admin/editor/field-1', label: 'Land & Drawing Editor', icon: EditIcon, roles: ['admin', 'verifier'] },
-  { to: '/dashboard',      label: 'Platform Overview',      icon: HomeIcon,   roles: ['admin', 'verifier'] },
-  { to: '/marketplace',    label: 'Marketplace Hub',        icon: StoreIcon,  roles: ['consumer', 'dealer', 'admin'] },
-  { to: '/data-tools',     label: 'Export & Reports',       icon: UploadIcon, roles: ['admin', 'verifier'] },
-  { to: '/users',          label: 'System Access',          icon: KeyIcon,    roles: ['admin'] },
+  // ── FARMER (strictly restricted to their own land) ──
+  { to: '/farmer',         label: 'Farmland Digital Twin',  icon: MapIcon,        roles: ['farmer'] },
+
+  // ── ADMIN (ONLY: Farmers List, New Farmer Requests, Surveyor Creation) ──
+  { to: '/admin/farmers',  label: 'Farmers List',            icon: UsersIcon,      roles: ['admin'] },
+  { to: '/admin/farmers?tab=requests', label: 'New Farmer Requests', icon: RequestsIcon, roles: ['admin'] },
+  { to: '/admin/surveyors', label: 'Surveyor Creation',      icon: SurveyorIcon,   roles: ['admin'] },
+
+  // ── VERIFIER (All operational, drawing, twin & market controls) ──
+  { to: '/farmer',         label: 'Farmland Digital Twin',  icon: MapIcon,        roles: ['verifier'] },
+  { to: '/admin/editor/field-1', label: 'Land & Drawing Editor', icon: EditIcon, roles: ['verifier'] },
+  { to: '/dashboard',      label: 'Platform Overview',      icon: HomeIcon,       roles: ['verifier'] },
+  { to: '/admin/farmers',  label: 'Farmers Directory',      icon: UsersIcon,      roles: ['verifier'] },
+  { to: '/marketplace',    label: 'Marketplace Hub',        icon: StoreIcon,      roles: ['verifier'] },
+  { to: '/data-tools',     label: 'Export & Reports',       icon: UploadIcon,     roles: ['verifier'] },
+
+  // ── CONSUMER & DEALER ──
+  { to: '/marketplace',    label: 'Marketplace Hub',        icon: StoreIcon,      roles: ['consumer', 'dealer'] },
 ]
 
 export default function AppLayout() {
   const { user, loginDemo, logout } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const handleLogout = () => {
@@ -26,7 +38,24 @@ export default function AppLayout() {
 
   const currentRole = user?.role || 'farmer'
   const visibleLinks = NAV_LINKS.filter(l => l.roles.includes(currentRole))
-  const homeLink = currentRole === 'farmer' ? '/farmer' : (currentRole === 'admin' || currentRole === 'verifier' ? '/admin/farmers' : (currentRole === 'consumer' || currentRole === 'dealer' ? '/marketplace' : '/dashboard'))
+  const homeLink = currentRole === 'farmer'
+    ? '/farmer'
+    : currentRole === 'admin'
+      ? '/admin/farmers'
+      : currentRole === 'verifier'
+        ? '/admin/editor/field-1'
+        : (currentRole === 'consumer' || currentRole === 'dealer' ? '/marketplace' : '/dashboard')
+
+  const isLinkActive = (to) => {
+    if (to.includes('?')) {
+      const [path, query] = to.split('?')
+      return location.pathname === path && location.search === `?${query}`
+    }
+    if (location.search && location.search !== '') {
+      return false
+    }
+    return location.pathname === to
+  }
 
   const handleGoBack = (e) => {
     if (e) e.preventDefault()
@@ -49,7 +78,8 @@ export default function AppLayout() {
 
     loginDemo(newRole)
     if (newRole === 'farmer') navigate('/farmer')
-    else if (newRole === 'admin' || newRole === 'verifier') navigate('/admin/farmers')
+    else if (newRole === 'admin') navigate('/admin/farmers')
+    else if (newRole === 'verifier') navigate('/admin/editor/field-1')
     else if (newRole === 'consumer' || newRole === 'dealer') navigate('/marketplace')
     else navigate('/dashboard')
   }
@@ -102,7 +132,7 @@ export default function AppLayout() {
               </div>
             </div>
           ) : currentRole === 'verifier' ? (
-            /* Verifier Role Switcher — Can switch to Farmer preview, but NOT to Admin */
+            /* Verifier Role Switcher — Operational & Land Specialist */
             <div className="bg-v2v-charcoal dark:bg-slate-800/60 p-2 rounded-xl border border-v2v-secondary/40 dark:border-slate-700/50 text-xs">
               <div className="flex items-center justify-between text-[10px] text-gray-400 mb-1">
                 <span>ACTIVE ROLE:</span>
@@ -113,12 +143,12 @@ export default function AppLayout() {
                 onChange={(e) => handleRoleSwitch(e.target.value)}
                 className="w-full bg-v2v-nearblack dark:bg-slate-900 text-white border border-v2v-secondary/50 dark:border-slate-700 rounded-lg px-2 py-1 text-xs focus:outline-none focus:border-v2v-lavender cursor-pointer"
               >
-                <option value="verifier">🛡️ Verifier (Land Verification)</option>
+                <option value="verifier">🛡️ Verifier (Full Spatial Controls)</option>
                 <option value="farmer">🧑‍🌾 Farmer View (Preview)</option>
               </select>
             </div>
           ) : (
-            /* Admin Role Switcher — Full control */
+            /* Admin Role Switcher — Pure Administrative Command */
             <div className="bg-v2v-charcoal dark:bg-slate-800/60 p-2 rounded-xl border border-v2v-secondary/40 dark:border-slate-700/50 text-xs">
               <div className="flex items-center justify-between text-[10px] text-gray-400 mb-1">
                 <span>ACTIVE ROLE:</span>
@@ -129,8 +159,8 @@ export default function AppLayout() {
                 onChange={(e) => handleRoleSwitch(e.target.value)}
                 className="w-full bg-v2v-nearblack dark:bg-slate-900 text-white border border-v2v-secondary/50 dark:border-slate-700 rounded-lg px-2 py-1 text-xs focus:outline-none focus:border-v2v-lavender cursor-pointer"
               >
-                <option value="admin">⚙️ Admin (Full Control)</option>
-                <option value="verifier">🛡️ Land Verifier</option>
+                <option value="admin">⚙️ Admin (Farmers & Surveyors)</option>
+                <option value="verifier">🛡️ Land Verifier (Spatial Operations)</option>
                 <option value="farmer">🧑‍🌾 Farmer View</option>
               </select>
             </div>
@@ -140,24 +170,30 @@ export default function AppLayout() {
         {/* Nav Links */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           <div className="text-[10px] font-bold text-gray-400 dark:text-slate-400 px-3 uppercase tracking-wider mb-2">
-            Platform Navigation
+            {currentRole === 'admin' ? 'Administrative Controls' : currentRole === 'verifier' ? 'Verifier Spatial Console' : 'Platform Navigation'}
           </div>
-          {visibleLinks.map(({ to, label, icon: Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              onClick={() => setSidebarOpen(false)}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all
-                ${isActive
-                  ? 'bg-v2v-gradient dark:bg-gradient-to-r dark:from-purple-700 dark:to-indigo-600 text-white shadow-md shadow-v2v-lavender/25'
-                  : 'text-gray-300 dark:text-slate-300 hover:bg-v2v-electric/50 dark:hover:bg-slate-800 hover:text-white'}`
-              }
-            >
-              <Icon className="w-4 h-4 flex-shrink-0 text-v2v-lavender dark:text-purple-400" />
-              <span>{label}</span>
-            </NavLink>
-          ))}
+          {visibleLinks.map(({ to, label, icon: Icon }) => {
+            const active = isLinkActive(to)
+            return (
+              <Link
+                key={to}
+                to={to}
+                onClick={() => setSidebarOpen(false)}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all
+                  ${active
+                    ? 'bg-v2v-gradient dark:bg-gradient-to-r dark:from-purple-700 dark:to-indigo-600 text-white shadow-md shadow-v2v-lavender/25'
+                    : 'text-gray-300 dark:text-slate-300 hover:bg-v2v-electric/50 dark:hover:bg-slate-800 hover:text-white'}`}
+              >
+                <Icon className="w-4 h-4 flex-shrink-0 text-v2v-lavender dark:text-purple-400" />
+                <span>{label}</span>
+                {to.includes('tab=requests') && (
+                  <span className="ml-auto bg-amber-500 text-white text-[9px] font-black px-1.5 py-0.2 rounded-full">
+                    NEW
+                  </span>
+                )}
+              </Link>
+            )
+          })}
         </nav>
 
         {/* User info footer */}
@@ -297,6 +333,22 @@ function StoreIcon({ className }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+    </svg>
+  )
+}
+
+function RequestsIcon({ className }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+    </svg>
+  )
+}
+
+function SurveyorIcon({ className }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
     </svg>
   )
 }

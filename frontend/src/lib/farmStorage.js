@@ -337,20 +337,36 @@ export const farmStorage = {
 
   // ── FARM-XT Pending Farmer Registrations & Admin Approval ─────────────────
   getPendingFarmerRegistrations: () => {
-    const raw = getStoredOrInit('farmxt_pending_farmers_v1', [])
-    // Filter out fake demo registrations (Ramesh Patel, Venkatesh Rao, etc.)
-    const realOnly = (Array.isArray(raw) ? raw : []).filter(item => 
-      item.id !== 'pending-farmer-101' && 
-      item.id !== 'pending-farmer-102' &&
-      item.full_name !== 'Ramesh Patel' &&
-      item.full_name !== 'Venkatesh Rao'
-    )
-    if (realOnly.length !== (Array.isArray(raw) ? raw.length : 0)) {
-      try {
-        localStorage.setItem('farmxt_pending_farmers_v1', JSON.stringify(realOnly))
-      } catch { /* ignore */ }
-    }
-    return realOnly
+    const defaultPending = [
+      {
+        id: 'pending-reg-01',
+        full_name: 'Pravin Solanki',
+        age: 42,
+        area_region: 'Anand Rural, Gujarat',
+        contact_number: '+91 98251 77123',
+        land_address: 'Survey No. 89/2, Borsad Road, Anand',
+        area_sq_acres: '14.5 Acres',
+        crops_yield: ['Bt Cotton', 'Hybrid Maize', 'Groundnut'],
+        role: 'farmer',
+        status: 'pending_admin_approval',
+        submitted_at: new Date(Date.now() - 7200000).toISOString(),
+      },
+      {
+        id: 'pending-reg-02',
+        full_name: 'Bhupendra Chaudhary',
+        age: 38,
+        area_region: 'Vadodara Agro Belt',
+        contact_number: '+91 97120 44890',
+        land_address: 'Plot 14B, Dabhoi Highway, Vadodara',
+        area_sq_acres: '22.0 Acres',
+        crops_yield: ['Basmati Rice (Paddy)', 'Drip Sugarcane'],
+        role: 'farmer',
+        status: 'pending_admin_approval',
+        submitted_at: new Date(Date.now() - 18000000).toISOString(),
+      }
+    ]
+    const list = getStoredOrInit('farmxt_pending_farmers_v1', defaultPending)
+    return Array.isArray(list) ? list : []
   },
 
   createPendingFarmerRegistration: (data) => {
@@ -475,6 +491,30 @@ export const farmStorage = {
         created_at: new Date(Date.now() - 172800000).toISOString(),
         last_login_at: new Date(Date.now() - 600000).toISOString(),
         is_online: true,
+      },
+      {
+        email: 'verifier@v2vtech.com',
+        password: 'verifier123',
+        role: 'verifier',
+        full_name: 'V2V Cadastral Land Verifier',
+        contact_number: '+91 94431 55210',
+        area_place: 'Salem & Coimbatore, Tamil Nadu',
+        specialization: 'Cadastral Boundary Verification',
+        license_number: 'V2V-VERIF-2026-001',
+        created_at: new Date(Date.now() - 604800000).toISOString(),
+        is_online: true,
+      },
+      {
+        email: 'surveyor@agrimap.local',
+        password: 'surveyor123',
+        role: 'verifier',
+        full_name: 'Field Surveyor & Land Specialist',
+        contact_number: '+91 98840 12345',
+        area_place: 'Pollachi & Western Ghats',
+        specialization: 'RTK GPS Boundary Survey',
+        license_number: 'V2V-SURV-2026-042',
+        created_at: new Date(Date.now() - 432000000).toISOString(),
+        is_online: true,
       }
     ]
     return getStoredOrInit('farmxt_user_credentials_v1', initialCreds)
@@ -533,6 +573,34 @@ export const farmStorage = {
   getConsumerAndDealerUsers: () => {
     const creds = farmStorage.getUserCredentials()
     return creds.filter(c => c.role === 'consumer' || c.role === 'dealer')
+  },
+
+  getSurveyors: () => {
+    const creds = farmStorage.getUserCredentials()
+    return creds.filter(c => c.role === 'verifier' || c.role === 'surveyor')
+  },
+
+  createSurveyor: (surveyorData) => {
+    const cleanEmail = (surveyorData.email || '').toLowerCase().trim()
+    const newSurveyor = {
+      id: `surveyor-${Date.now()}`,
+      role: 'verifier',
+      is_active: true,
+      ...surveyorData,
+      email: cleanEmail,
+      created_at: new Date().toISOString(),
+      is_online: true,
+    }
+    farmStorage.saveUserCredential(newSurveyor)
+    return newSurveyor
+  },
+
+  deleteSurveyor: (email) => {
+    const creds = farmStorage.getUserCredentials()
+    const cleanEmail = (email || '').toLowerCase().trim()
+    const remaining = creds.filter(c => !(c.email.toLowerCase() === cleanEmail && (c.role === 'verifier' || c.role === 'surveyor')))
+    localStorage.setItem('farmxt_user_credentials_v1', JSON.stringify(remaining))
+    return true
   },
 
   authenticateUser: (email, password, role) => {
