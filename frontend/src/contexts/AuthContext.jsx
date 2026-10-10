@@ -125,7 +125,7 @@ export function AuthProvider({ children }) {
     if (cleanEmail.includes('admin')) {
       return loginDemo('admin')
     }
-    if (cleanEmail.includes('verifier')) {
+    if (cleanEmail.includes('verifier') || cleanEmail.includes('surveyor')) {
       return loginDemo('verifier')
     }
     if (cleanEmail.includes('consumer')) {
@@ -166,7 +166,7 @@ export function AuthProvider({ children }) {
       if (cleanEmail.includes('admin')) {
         return loginDemo('admin')
       }
-      if (cleanEmail.includes('verifier')) {
+      if (cleanEmail.includes('verifier') || cleanEmail.includes('surveyor')) {
         return loginDemo('verifier')
       }
       if (cleanEmail.includes('consumer')) {

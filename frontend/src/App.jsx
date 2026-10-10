@@ -16,6 +16,7 @@ import IoTDashboardPage from './pages/IoTDashboardPage'
 import DataToolsPage from './pages/DataToolsPage'
 import UsersPage from './pages/UsersPage'
 import MarketplacePage from './pages/MarketplacePage'
+import SurveyorsManagementPage from './pages/SurveyorsManagementPage'
 
 import { NavigationLoaderProvider } from './contexts/NavigationLoaderContext'
 
@@ -54,8 +55,9 @@ export default function App() {
                 <Route path="/data-tools" element={<DataToolsPage />} />
               </Route>
 
-              {/* Admin only (System Access) */}
+              {/* Admin only (Surveyor Creation & Management) */}
               <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+                <Route path="/admin/surveyors" element={<SurveyorsManagementPage />} />
                 <Route path="/users" element={<UsersPage />} />
               </Route>
             </Route>

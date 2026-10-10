@@ -124,6 +124,8 @@ const THICKNESS_PRESETS = [
 
 export default function FarmerDashboardPage() {
   const { user } = useAuth()
+  const isFarmer = user?.role === 'farmer'
+  const canEdit = !isFarmer
   const location = useLocation()
   const navigate = useNavigate()
   const [farmers, setFarmers] = useState([])
@@ -255,7 +257,7 @@ export default function FarmerDashboardPage() {
   const handleMapClick = (latlng) => {
     const { lat, lng } = latlng
 
-    if (activeTool === 'inspect') {
+    if (!canEdit || activeTool === 'inspect') {
       return
     }
 
@@ -669,14 +671,21 @@ export default function FarmerDashboardPage() {
             )}
           </button>
 
-          <button
-            onClick={() => setShowScratchModal(true)}
-            className="btn-v2v-gradient text-xs py-1.5 px-3 rounded-lg flex items-center gap-1.5 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all"
-            title="Start Map From Scratch & Digitize Farmland & Crop Plots"
-          >
-            <span>🗺️</span>
-            <span>Digitize From Scratch</span>
-          </button>
+          {canEdit ? (
+            <button
+              onClick={() => setShowScratchModal(true)}
+              className="btn-v2v-gradient text-xs py-1.5 px-3 rounded-lg flex items-center gap-1.5 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all"
+              title="Start Map From Scratch & Digitize Farmland & Crop Plots"
+            >
+              <span>🗺️</span>
+              <span>Digitize From Scratch</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-1.5 bg-purple-50 text-v2v-deep border border-v2v-lavender/30 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm">
+              <span>👁️</span>
+              <span>View-Only Farmland Twin</span>
+            </div>
+          )}
 
           <button
             onClick={() => setActiveModal({ type: 'farmer_info', data: currentFarmer })}
@@ -691,67 +700,82 @@ export default function FarmerDashboardPage() {
       <div className="bg-white/95 backdrop-blur-md border-b border-v2v-lavendergray px-4 py-2 flex flex-wrap items-center justify-between gap-3 text-xs z-20 flex-shrink-0 shadow-sm">
         {/* Tool Mode Buttons */}
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-bold text-v2v-deep text-[11px] uppercase tracking-wider mr-1">Tools:</span>
-          
-          <button
-            onClick={() => { setActiveTool('inspect'); setDraftPoints([]); }}
-            className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
-              activeTool === 'inspect'
-                ? 'bg-v2v-deep text-white shadow-md shadow-v2v-lavender/30'
-                : 'bg-v2v-softwhite text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            <span>👆</span>
-            <span>Inspect Elements</span>
-          </button>
+          {canEdit ? (
+            <>
+              <span className="font-bold text-v2v-deep text-[11px] uppercase tracking-wider mr-1">Tools:</span>
+              
+              <button
+                onClick={() => { setActiveTool('inspect'); setDraftPoints([]); }}
+                className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
+                  activeTool === 'inspect'
+                    ? 'bg-v2v-deep text-white shadow-md shadow-v2v-lavender/30'
+                    : 'bg-v2v-softwhite text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                <span>👆</span>
+                <span>Inspect Elements</span>
+              </button>
 
-          <button
-            onClick={() => { setActiveTool('outline'); setDraftPoints([]); }}
-            className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
-              activeTool === 'outline'
-                ? 'bg-v2v-deep text-white shadow-md shadow-v2v-lavender/30'
-                : 'bg-v2v-softwhite text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            <span>✏️</span>
-            <span>Outline Land Boundary</span>
-          </button>
+              <button
+                onClick={() => { setActiveTool('outline'); setDraftPoints([]); }}
+                className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
+                  activeTool === 'outline'
+                    ? 'bg-v2v-deep text-white shadow-md shadow-v2v-lavender/30'
+                    : 'bg-v2v-softwhite text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                <span>✏️</span>
+                <span>Outline Land Boundary</span>
+              </button>
 
-          <button
-            onClick={() => { setActiveTool('shade_zone'); setDraftPoints([]); }}
-            className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
-              activeTool === 'shade_zone'
-                ? 'bg-v2v-deep text-white shadow-md shadow-v2v-lavender/30'
-                : 'bg-v2v-softwhite text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            <span>🎨</span>
-            <span>Shade Crop Zone</span>
-          </button>
+              <button
+                onClick={() => { setActiveTool('shade_zone'); setDraftPoints([]); }}
+                className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
+                  activeTool === 'shade_zone'
+                    ? 'bg-v2v-deep text-white shadow-md shadow-v2v-lavender/30'
+                    : 'bg-v2v-softwhite text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                <span>🎨</span>
+                <span>Shade Crop Zone</span>
+              </button>
 
-          <button
-            onClick={() => { setActiveTool('draw_path'); setDraftPoints([]); }}
-            className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
-              activeTool === 'draw_path'
-                ? 'bg-v2v-deep text-white shadow-md shadow-v2v-lavender/30'
-                : 'bg-v2v-softwhite text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            <span>🛤️</span>
-            <span>Draw Path / Pipe</span>
-          </button>
+              <button
+                onClick={() => { setActiveTool('draw_path'); setDraftPoints([]); }}
+                className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
+                  activeTool === 'draw_path'
+                    ? 'bg-v2v-deep text-white shadow-md shadow-v2v-lavender/30'
+                    : 'bg-v2v-softwhite text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                <span>🛤️</span>
+                <span>Draw Path / Pipe</span>
+              </button>
 
-          <button
-            onClick={() => { setActiveTool('drop_pin'); setDraftPoints([]); }}
-            className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
-              activeTool === 'drop_pin'
-                ? 'bg-v2v-deep text-white shadow-md shadow-v2v-lavender/30'
-                : 'bg-v2v-softwhite text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            <span>📍</span>
-            <span>Drop Device Pin</span>
-          </button>
+              <button
+                onClick={() => { setActiveTool('drop_pin'); setDraftPoints([]); }}
+                className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
+                  activeTool === 'drop_pin'
+                    ? 'bg-v2v-deep text-white shadow-md shadow-v2v-lavender/30'
+                    : 'bg-v2v-softwhite text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                <span>📍</span>
+                <span>Drop Device Pin</span>
+              </button>
+            </>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-v2v-deep text-[11px] uppercase tracking-wider">Mode:</span>
+              <span className="px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 bg-v2v-deep text-white shadow-sm">
+                <span>👁️</span>
+                <span>Interactive Map & Telemetry Explorer</span>
+              </span>
+              <span className="text-[11px] text-gray-500 hidden sm:inline">
+                Click any zone, pump, sensor, or pipeline to view live metrics.
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Layer Visibility Toggles */}
@@ -801,7 +825,7 @@ export default function FarmerDashboardPage() {
       </div>
 
       {/* ── Active Tool Configuration Floating Sub-Bar ── */}
-      {activeTool !== 'inspect' && (
+      {canEdit && activeTool !== 'inspect' && (
         <div className="bg-v2v-deep text-white px-4 py-2 text-xs flex flex-wrap items-center justify-between gap-3 z-20 shadow-md">
           <div className="flex items-center gap-3 flex-wrap">
             {activeTool === 'outline' && (
@@ -1523,18 +1547,22 @@ export default function FarmerDashboardPage() {
                 </div>
               ) : (
                 <div className="text-center py-2 text-gray-400 text-[11px]">
-                  No sub-plots plotted yet. Use "Shade Crop Zone" or "Digitize From Scratch".
+                  {canEdit
+                    ? 'No sub-plots plotted yet. Use "Shade Crop Zone" or "Digitize From Scratch".'
+                    : 'No sub-plots recorded for this farmland parcel.'}
                 </div>
               )}
 
               {/* Quick Jump to Scratch Digitizer */}
-              <button
-                onClick={() => setShowScratchModal(true)}
-                className="w-full py-1.5 bg-v2v-softwhite hover:bg-purple-100 border border-v2v-border text-v2v-deep text-[11px] font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all"
-              >
-                <span>🗺️</span>
-                <span>Open Precision Land Digitizer</span>
-              </button>
+              {canEdit && (
+                <button
+                  onClick={() => setShowScratchModal(true)}
+                  className="w-full py-1.5 bg-v2v-softwhite hover:bg-purple-100 border border-v2v-border text-v2v-deep text-[11px] font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all"
+                >
+                  <span>🗺️</span>
+                  <span>Open Precision Land Digitizer</span>
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -1803,144 +1831,178 @@ export default function FarmerDashboardPage() {
                     </div>
                   </div>
 
-                  {/* Line Name Edit */}
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 mb-1">
-                      Line Title / Label
-                    </label>
-                    <input
-                      type="text"
-                      value={inspectorName}
-                      onChange={(e) => setInspectorName(e.target.value)}
-                      className="w-full px-3 py-2 text-xs border border-gray-300 rounded-xl focus:border-purple-600 focus:ring-2 focus:ring-purple-200 outline-none"
-                      placeholder="e.g. Sector 2 Drip Laterals"
-                    />
-                  </div>
+                  {!canEdit ? (
+                    <div className="space-y-3 pt-2">
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="p-3 bg-gray-50 rounded-xl border border-gray-200">
+                          <span className="text-gray-400 block text-[10px] uppercase font-bold">Category</span>
+                          <strong className="text-v2v-deep capitalize">
+                            {activeModal.data?.line_category || 'Infrastructure Line'}
+                          </strong>
+                        </div>
+                        <div className="p-3 bg-gray-50 rounded-xl border border-gray-200">
+                          <span className="text-gray-400 block text-[10px] uppercase font-bold">Measured Length</span>
+                          <strong className="text-emerald-700 font-mono">
+                            {activeModal.data?.length_meters || 120} m ({activeModal.data?.length_feet || 394} ft)
+                          </strong>
+                        </div>
+                      </div>
 
-                  {/* Color Picker */}
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 mb-1.5">
-                      Line Color ({inspectorColor})
-                    </label>
-                    <div className="flex items-center gap-2 flex-wrap bg-gray-50 p-2.5 rounded-xl border border-gray-200">
-                      {LINE_COLORS.map(c => (
+                      <div className="p-3 bg-purple-50/70 border border-purple-200/60 rounded-xl flex items-center justify-between">
+                        <span className="text-gray-600 font-medium">Cadastral Visual Style:</span>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className="inline-block w-4 h-4 rounded-full border border-gray-300"
+                            style={{ backgroundColor: activeModal.data?.color || inspectorColor || '#7C3AED' }}
+                          />
+                          <span className="font-semibold text-v2v-deep capitalize">
+                            {activeModal.data?.line_style || inspectorStyle || 'Solid'} ({activeModal.data?.weight || inspectorThickness || 6}px)
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Line Name Edit */}
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">
+                          Line Title / Label
+                        </label>
+                        <input
+                          type="text"
+                          value={inspectorName}
+                          onChange={(e) => setInspectorName(e.target.value)}
+                          className="w-full px-3 py-2 text-xs border border-gray-300 rounded-xl focus:border-purple-600 focus:ring-2 focus:ring-purple-200 outline-none"
+                          placeholder="e.g. Sector 2 Drip Laterals"
+                        />
+                      </div>
+
+                      {/* Color Picker */}
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                          Line Color ({inspectorColor})
+                        </label>
+                        <div className="flex items-center gap-2 flex-wrap bg-gray-50 p-2.5 rounded-xl border border-gray-200">
+                          {LINE_COLORS.map(c => (
+                            <button
+                              key={c.hex}
+                              type="button"
+                              title={c.name}
+                              onClick={() => setInspectorColor(c.hex)}
+                              className={`w-7 h-7 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
+                                inspectorColor === c.hex ? 'border-purple-900 scale-110 shadow-md ring-2 ring-purple-400' : 'border-gray-300 opacity-80 hover:opacity-100'
+                              }`}
+                              style={{ backgroundColor: c.hex }}
+                            >
+                              {inspectorColor === c.hex && (
+                                <span className={c.hex === '#FFFFFF' ? 'text-black text-xs font-bold' : 'text-white text-xs font-bold'}>✓</span>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Thickness / Boldness Control */}
+                      <div>
+                        <div className="flex items-center justify-between mb-1.5">
+                          <label className="text-xs font-bold text-gray-700">
+                            Line Thickness / Boldness: <strong className="text-purple-700">{inspectorThickness}px</strong>
+                          </label>
+                        </div>
+                        <div className="grid grid-cols-5 gap-1.5 mb-2">
+                          {THICKNESS_PRESETS.map(t => (
+                            <button
+                              key={t.val}
+                              type="button"
+                              onClick={() => setInspectorThickness(t.val)}
+                              className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all ${
+                                inspectorThickness === t.val
+                                  ? 'bg-purple-700 text-white shadow-md shadow-purple-900/20'
+                                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                              }`}
+                            >
+                              {t.label}
+                            </button>
+                          ))}
+                        </div>
+                        <input
+                          type="range"
+                          min="2"
+                          max="16"
+                          value={inspectorThickness}
+                          onChange={(e) => setInspectorThickness(parseInt(e.target.value))}
+                          className="w-full accent-purple-700 cursor-pointer"
+                        />
+                      </div>
+
+                      {/* Line Style (Solid, Dashed, Dotted) */}
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                          Stroke Pattern
+                        </label>
+                        <div className="grid grid-cols-3 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setInspectorStyle('solid')}
+                            className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
+                              inspectorStyle === 'solid'
+                                ? 'bg-purple-50 border-purple-600 text-purple-900 ring-2 ring-purple-200'
+                                : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                            }`}
+                          >
+                            ━━ Solid Line
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setInspectorStyle('dashed')}
+                            className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
+                              inspectorStyle === 'dashed'
+                                ? 'bg-purple-50 border-purple-600 text-purple-900 ring-2 ring-purple-200'
+                                : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                            }`}
+                          >
+                            ┅ Dashed Line
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setInspectorStyle('dotted')}
+                            className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
+                              inspectorStyle === 'dotted'
+                                ? 'bg-purple-50 border-purple-600 text-purple-900 ring-2 ring-purple-200'
+                                : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                            }`}
+                          >
+                            ··· Dotted Line
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="pt-3 border-t border-gray-100 flex items-center justify-between gap-3">
                         <button
-                          key={c.hex}
                           type="button"
-                          title={c.name}
-                          onClick={() => setInspectorColor(c.hex)}
-                          className={`w-7 h-7 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
-                            inspectorColor === c.hex ? 'border-purple-900 scale-110 shadow-md ring-2 ring-purple-400' : 'border-gray-300 opacity-80 hover:opacity-100'
-                          }`}
-                          style={{ backgroundColor: c.hex }}
+                          onClick={() => handleDeleteLine(activeModal.data?.id)}
+                          className="px-3.5 py-2 rounded-xl text-rose-600 hover:bg-rose-50 border border-rose-200 text-xs font-bold transition-colors"
                         >
-                          {inspectorColor === c.hex && (
-                            <span className={c.hex === '#FFFFFF' ? 'text-black text-xs font-bold' : 'text-white text-xs font-bold'}>✓</span>
-                          )}
+                          🗑️ Delete Line
                         </button>
-                      ))}
-                    </div>
-                  </div>
 
-                  {/* Thickness / Boldness Control */}
-                  <div>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <label className="text-xs font-bold text-gray-700">
-                        Line Thickness / Boldness: <strong className="text-purple-700">{inspectorThickness}px</strong>
-                      </label>
-                    </div>
-                    <div className="grid grid-cols-5 gap-1.5 mb-2">
-                      {THICKNESS_PRESETS.map(t => (
                         <button
-                          key={t.val}
                           type="button"
-                          onClick={() => setInspectorThickness(t.val)}
-                          className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all ${
-                            inspectorThickness === t.val
-                              ? 'bg-purple-700 text-white shadow-md shadow-purple-900/20'
-                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                          }`}
+                          onClick={() => handleUpdateLine(activeModal.data?.id, {
+                            name: inspectorName,
+                            color: inspectorColor,
+                            weight: inspectorThickness,
+                            line_style: inspectorStyle,
+                            dashArray: inspectorStyle === 'dashed' ? '8, 8' : inspectorStyle === 'dotted' ? '3, 6' : undefined,
+                          })}
+                          className="px-5 py-2 rounded-xl bg-gradient-to-r from-v2v-deep to-purple-700 hover:from-purple-900 hover:to-purple-800 text-white font-bold text-xs shadow-md shadow-purple-950/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
                         >
-                          {t.label}
+                          Apply & Save Changes →
                         </button>
-                      ))}
-                    </div>
-                    <input
-                      type="range"
-                      min="2"
-                      max="16"
-                      value={inspectorThickness}
-                      onChange={(e) => setInspectorThickness(parseInt(e.target.value))}
-                      className="w-full accent-purple-700 cursor-pointer"
-                    />
-                  </div>
-
-                  {/* Line Style (Solid, Dashed, Dotted) */}
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 mb-1.5">
-                      Stroke Pattern
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setInspectorStyle('solid')}
-                        className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
-                          inspectorStyle === 'solid'
-                            ? 'bg-purple-50 border-purple-600 text-purple-900 ring-2 ring-purple-200'
-                            : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
-                        }`}
-                      >
-                        ━━ Solid Line
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setInspectorStyle('dashed')}
-                        className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
-                          inspectorStyle === 'dashed'
-                            ? 'bg-purple-50 border-purple-600 text-purple-900 ring-2 ring-purple-200'
-                            : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
-                        }`}
-                      >
-                        ┅ Dashed Line
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setInspectorStyle('dotted')}
-                        className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
-                          inspectorStyle === 'dotted'
-                            ? 'bg-purple-50 border-purple-600 text-purple-900 ring-2 ring-purple-200'
-                            : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
-                        }`}
-                      >
-                        ··· Dotted Line
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="pt-3 border-t border-gray-100 flex items-center justify-between gap-3">
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteLine(activeModal.data?.id)}
-                      className="px-3.5 py-2 rounded-xl text-rose-600 hover:bg-rose-50 border border-rose-200 text-xs font-bold transition-colors"
-                    >
-                      🗑️ Delete Line
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleUpdateLine(activeModal.data?.id, {
-                        name: inspectorName,
-                        color: inspectorColor,
-                        weight: inspectorThickness,
-                        line_style: inspectorStyle,
-                        dashArray: inspectorStyle === 'dashed' ? '8, 8' : inspectorStyle === 'dotted' ? '3, 6' : undefined,
-                      })}
-                      className="px-5 py-2 rounded-xl bg-gradient-to-r from-v2v-deep to-purple-700 hover:from-purple-900 hover:to-purple-800 text-white font-bold text-xs shadow-md shadow-purple-950/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
-                    >
-                      Apply & Save Changes →
-                    </button>
-                  </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
 
@@ -2030,90 +2092,92 @@ export default function FarmerDashboardPage() {
                   </div>
 
                   {/* ── Interactive Land Options & Actions ── */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-[11px] font-extrabold text-v2v-deep uppercase tracking-wider px-1">
-                      <span>⚡ Interactive Land Actions:</span>
-                      <span className="text-[10px] text-purple-600 font-semibold">Click to activate mode</span>
+                  {canEdit && (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-[11px] font-extrabold text-v2v-deep uppercase tracking-wider px-1">
+                        <span>⚡ Interactive Land Actions:</span>
+                        <span className="text-[10px] text-purple-600 font-semibold">Click to activate mode</span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        {/* Action 1: Shade Crop Zone */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveModal(null)
+                            setActiveTool('shade_zone')
+                            toast.info('Click points on the map to shade a new crop zone.')
+                          }}
+                          className="p-3 rounded-xl border border-purple-200 bg-purple-50/70 hover:bg-purple-100/90 text-left transition-all hover:scale-[1.02] active:scale-[0.98] group cursor-pointer"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-base group-hover:scale-110 transition-transform">🌱</span>
+                            <span className="font-extrabold text-v2v-deep text-xs">Shade Crop Zone</span>
+                          </div>
+                          <p className="text-[10px] text-gray-500 mt-1 leading-snug">
+                            Partition sub-plots & assign crops (Mango, Cocoa, Cane)
+                          </p>
+                        </button>
+
+                        {/* Action 2: Draw Pipeline / Road */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveModal(null)
+                            setActiveTool('draw_path')
+                            toast.info('Click on map to trace irrigation pipes or tractor paths.')
+                          }}
+                          className="p-3 rounded-xl border border-purple-200 bg-purple-50/70 hover:bg-purple-100/90 text-left transition-all hover:scale-[1.02] active:scale-[0.98] group cursor-pointer"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-base group-hover:scale-110 transition-transform">〰️</span>
+                            <span className="font-extrabold text-v2v-deep text-xs">Add Path or Pipe</span>
+                          </div>
+                          <p className="text-[10px] text-gray-500 mt-1 leading-snug">
+                            Trace drip irrigation laterals, fences, or roads
+                          </p>
+                        </button>
+
+                        {/* Action 3: Drop Hardware Pin */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveModal(null)
+                            setActiveTool('drop_pin')
+                            toast.info('Click anywhere inside boundary to place a device pin.')
+                          }}
+                          className="p-3 rounded-xl border border-purple-200 bg-purple-50/70 hover:bg-purple-100/90 text-left transition-all hover:scale-[1.02] active:scale-[0.98] group cursor-pointer"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-base group-hover:scale-110 transition-transform">📍</span>
+                            <span className="font-extrabold text-v2v-deep text-xs">Drop Device Pin</span>
+                          </div>
+                          <p className="text-[10px] text-gray-500 mt-1 leading-snug">
+                            Place smart borewells, 4K CCTV cameras, or sensors
+                          </p>
+                        </button>
+
+                        {/* Action 4: Redraw / Adjust Boundary */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveModal(null)
+                            handleLoadCurrentBoundary()
+                            toast.info('Boundary vertices loaded. Drag pins to adjust shape.')
+                          }}
+                          className="p-3 rounded-xl border border-purple-200 bg-purple-50/70 hover:bg-purple-100/90 text-left transition-all hover:scale-[1.02] active:scale-[0.98] group cursor-pointer"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-base group-hover:scale-110 transition-transform">📐</span>
+                            <span className="font-extrabold text-v2v-deep text-xs">Adjust Boundary</span>
+                          </div>
+                          <p className="text-[10px] text-gray-500 mt-1 leading-snug">
+                            Fine-tune GPS boundary corners & recalculate acreage
+                          </p>
+                        </button>
+                      </div>
                     </div>
-
-                    <div className="grid grid-cols-2 gap-2">
-                      {/* Action 1: Shade Crop Zone */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setActiveModal(null)
-                          setActiveTool('shade_zone')
-                          toast.info('Click points on the map to shade a new crop zone.')
-                        }}
-                        className="p-3 rounded-xl border border-purple-200 bg-purple-50/70 hover:bg-purple-100/90 text-left transition-all hover:scale-[1.02] active:scale-[0.98] group cursor-pointer"
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className="text-base group-hover:scale-110 transition-transform">🌱</span>
-                          <span className="font-extrabold text-v2v-deep text-xs">Shade Crop Zone</span>
-                        </div>
-                        <p className="text-[10px] text-gray-500 mt-1 leading-snug">
-                          Partition sub-plots & assign crops (Mango, Cocoa, Cane)
-                        </p>
-                      </button>
-
-                      {/* Action 2: Draw Pipeline / Road */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setActiveModal(null)
-                          setActiveTool('draw_path')
-                          toast.info('Click on map to trace irrigation pipes or tractor paths.')
-                        }}
-                        className="p-3 rounded-xl border border-purple-200 bg-purple-50/70 hover:bg-purple-100/90 text-left transition-all hover:scale-[1.02] active:scale-[0.98] group cursor-pointer"
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className="text-base group-hover:scale-110 transition-transform">〰️</span>
-                          <span className="font-extrabold text-v2v-deep text-xs">Add Path or Pipe</span>
-                        </div>
-                        <p className="text-[10px] text-gray-500 mt-1 leading-snug">
-                          Trace drip irrigation laterals, fences, or roads
-                        </p>
-                      </button>
-
-                      {/* Action 3: Drop Hardware Pin */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setActiveModal(null)
-                          setActiveTool('drop_pin')
-                          toast.info('Click anywhere inside boundary to place a device pin.')
-                        }}
-                        className="p-3 rounded-xl border border-purple-200 bg-purple-50/70 hover:bg-purple-100/90 text-left transition-all hover:scale-[1.02] active:scale-[0.98] group cursor-pointer"
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className="text-base group-hover:scale-110 transition-transform">📍</span>
-                          <span className="font-extrabold text-v2v-deep text-xs">Drop Device Pin</span>
-                        </div>
-                        <p className="text-[10px] text-gray-500 mt-1 leading-snug">
-                          Place smart borewells, 4K CCTV cameras, or sensors
-                        </p>
-                      </button>
-
-                      {/* Action 4: Redraw / Adjust Boundary */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setActiveModal(null)
-                          handleLoadCurrentBoundary()
-                          toast.info('Boundary vertices loaded. Drag pins to adjust shape.')
-                        }}
-                        className="p-3 rounded-xl border border-purple-200 bg-purple-50/70 hover:bg-purple-100/90 text-left transition-all hover:scale-[1.02] active:scale-[0.98] group cursor-pointer"
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className="text-base group-hover:scale-110 transition-transform">📐</span>
-                          <span className="font-extrabold text-v2v-deep text-xs">Adjust Boundary</span>
-                        </div>
-                        <p className="text-[10px] text-gray-500 mt-1 leading-snug">
-                          Fine-tune GPS boundary corners & recalculate acreage
-                        </p>
-                      </button>
-                    </div>
-                  </div>
+                  )}
 
                   {/* ── Farmland Profile Details & Telemetry ── */}
                   <div className="bg-white border border-gray-200 rounded-2xl p-3.5 space-y-2.5">
@@ -2250,18 +2314,20 @@ export default function FarmerDashboardPage() {
       )}
 
       {/* ── Scratch Map Digitizer & Sub-Field Studio Modal ── */}
-      <ScratchMapDigitizerModal
-        isOpen={showScratchModal}
-        onClose={() => setShowScratchModal(false)}
-        onCreatedFarmer={(newFarmer) => {
-          const all = farmStorage.getFarmers()
-          setFarmers(all)
-          setSelectedFarmerId(newFarmer.id)
-          const data = farmStorage.getFieldGeoJSON(newFarmer.field_id)
-          setGeojson(data)
-          navigate(`/farmer?farmerId=${newFarmer.id}`, { replace: true })
-        }}
-      />
+      {canEdit && (
+        <ScratchMapDigitizerModal
+          isOpen={showScratchModal}
+          onClose={() => setShowScratchModal(false)}
+          onCreatedFarmer={(newFarmer) => {
+            const all = farmStorage.getFarmers()
+            setFarmers(all)
+            setSelectedFarmerId(newFarmer.id)
+            const data = farmStorage.getFieldGeoJSON(newFarmer.field_id)
+            setGeojson(data)
+            navigate(`/farmer?farmerId=${newFarmer.id}`, { replace: true })
+          }}
+        />
+      )}
     </div>
   )
 }
