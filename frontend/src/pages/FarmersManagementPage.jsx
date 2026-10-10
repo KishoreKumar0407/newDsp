@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import farmStorage from '../lib/farmStorage'
 import toast from '../components/ui/Toast'
 import ScratchMapDigitizerModal from '../components/survey/ScratchMapDigitizerModal'
+import { parseCoordinates } from '../lib/coordinateParser'
+
 
 export default function FarmersManagementPage() {
   const [farmers, setFarmers] = useState([])
@@ -21,6 +23,30 @@ export default function FarmersManagementPage() {
   const [approvalForm, setApprovalForm] = useState({ email: '', password: 'farmer123' })
 
   const navigate = useNavigate()
+
+  // ── Coordinate Go-To State ──
+  const [coordGoName, setCoordGoName] = useState('')
+  const [coordGoValue, setCoordGoValue] = useState('')
+  const [coordGoError, setCoordGoError] = useState('')
+
+  const handleCoordGo = (e) => {
+    if (e && e.preventDefault) e.preventDefault()
+    setCoordGoError('')
+    const parsed = parseCoordinates(coordGoValue)
+    if (!parsed.ok) {
+      setCoordGoError(parsed.error)
+      return
+    }
+    const label = coordGoName.trim() || `${parsed.lat.toFixed(5)}, ${parsed.lng.toFixed(5)}`
+    // Navigate to Admin Land Editor with coordinates in query params
+    const params = new URLSearchParams({
+      flyLat: parsed.lat,
+      flyLng: parsed.lng,
+      flyName: label,
+    })
+    navigate(`/admin/editor/field-1?${params.toString()}`)
+  }
+
 
   // Form state
   const [form, setForm] = useState({
@@ -253,7 +279,7 @@ export default function FarmersManagementPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           {/* Marketplace Orders Button */}
           <button
             onClick={() => setAdminOrdersOpen(true)}
@@ -267,6 +293,45 @@ export default function FarmersManagementPage() {
               </span>
             )}
           </button>
+
+          {/* 📍 Go-To Coordinate Navigator */}
+          <form
+            onSubmit={handleCoordGo}
+            className="relative flex items-center gap-1.5 bg-white dark:bg-slate-800 border border-v2v-lavendergray dark:border-slate-700 px-2.5 py-2 rounded-xl shadow-sm"
+          >
+            <span className="text-sm select-none">📍</span>
+            <input
+              type="text"
+              value={coordGoName}
+              onChange={(e) => setCoordGoName(e.target.value)}
+              placeholder="Location name"
+              className="bg-transparent text-xs w-24 focus:outline-none text-slate-800 dark:text-slate-100 placeholder:text-gray-400 font-semibold border-r border-v2v-lavendergray dark:border-slate-600 pr-1.5"
+              aria-label="Location name"
+            />
+            <input
+              type="text"
+              value={coordGoValue}
+              onChange={(e) => { setCoordGoValue(e.target.value); if (coordGoError) setCoordGoError('') }}
+              placeholder={`9°34'03.0"N 77°40'44.8"E`}
+              className="bg-transparent text-xs w-44 focus:outline-none text-slate-800 dark:text-slate-100 placeholder:text-gray-400 font-mono"
+              aria-label="Enter DMS or decimal coordinates"
+            />
+            <button
+              type="submit"
+              className="btn-v2v-gradient text-xs py-1 px-3 rounded-lg font-bold hover:scale-105 active:scale-95 transition-all whitespace-nowrap"
+            >
+              Go to Map
+            </button>
+            {coordGoError && (
+              <div
+                role="alert"
+                className="absolute top-full left-0 mt-1 z-50 bg-rose-50 dark:bg-rose-950/90 text-rose-600 dark:text-rose-300 text-[11px] font-semibold px-2.5 py-1.5 rounded-lg border border-rose-300 dark:border-rose-800 shadow-md max-w-xs"
+              >
+                ⚠️ {coordGoError}
+              </div>
+            )}
+          </form>
+
           <button
             onClick={() => setShowScratchMapModal(true)}
             className="btn-v2v-gradient text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-md flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all"
@@ -282,6 +347,7 @@ export default function FarmersManagementPage() {
             <span>Quick Form Entry</span>
           </button>
         </div>
+
       </div>
 
       {/* ── Stats Summary Bar ── */}

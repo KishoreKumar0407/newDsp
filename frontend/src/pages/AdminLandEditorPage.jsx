@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'
+
 import { MapContainer, TileLayer, Polygon, Polyline, Marker, Popup, Tooltip, useMap, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
 import farmStorage from '../lib/farmStorage'
@@ -89,6 +90,7 @@ function MapEventsController({
 export default function AdminLandEditorPage() {
   const { fieldId = 'field-1' } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
 
   const [geojson, setGeojson] = useState(null)
   const [farmers, setFarmers] = useState([])
@@ -127,9 +129,10 @@ export default function AdminLandEditorPage() {
 
   // ── Admin Coordinate Navigation State ──
   const [coordInput, setCoordInput] = useState('')
+  const [locationName, setLocationName] = useState('')
   const [coordError, setCoordError] = useState('')
   const [targetLocation, setTargetLocation] = useState(null)
-  const { startLoader } = useNavigateWithLoader()
+  useNavigateWithLoader() // keep context available for logo/back nav
 
   const handleCoordinateGo = (e) => {
     if (e && e.preventDefault) e.preventDefault()
@@ -141,16 +144,19 @@ export default function AdminLandEditorPage() {
       return
     }
 
-    // Trigger loader, then fly to the location
-    startLoader(`Flying to coordinates ${parsed.lat.toFixed(5)}, ${parsed.lng.toFixed(5)}...`, 1200, () => {
-      setTargetLocation({
-        lat: parsed.lat,
-        lng: parsed.lng,
-        formatted: parsed.formatted,
-        dms: parsed.dms,
-      })
-      toast.success(`📍 Map relocated to ${parsed.lat}, ${parsed.lng}`)
+    const label = locationName.trim() || `${parsed.lat.toFixed(5)}, ${parsed.lng.toFixed(5)}`
+
+    // Fly immediately — no loader delay
+    // _ts ensures useEffect fires even when same coords submitted twice
+    setTargetLocation({
+      lat: parsed.lat,
+      lng: parsed.lng,
+      formatted: parsed.formatted,
+      dms: parsed.dms,
+      name: label,
+      _ts: Date.now(),
     })
+    toast.success(`📍 Flying to ${label}`)
   }
 
   // Load field GeoJSON and Farmers
@@ -169,6 +175,34 @@ export default function AdminLandEditorPage() {
       setHasUnsavedBoundary(false)
     }
   }, [selectedFieldId])
+
+  // ── Auto-fly from URL query params (e.g. ?flyLat=9.5675&flyLng=77.679&flyName=Borewell) ──
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const flyLat = parseFloat(params.get('flyLat'))
+    const flyLng = parseFloat(params.get('flyLng'))
+    const flyName = params.get('flyName') || ''
+    if (!isNaN(flyLat) && !isNaN(flyLng)) {
+      // Pre-fill the input fields
+      setLocationName(flyName)
+      setCoordInput(`${flyLat}, ${flyLng}`)
+      // Fly to the location with a short delay to let the map mount
+      const t = setTimeout(() => {
+        setTargetLocation({
+          lat: flyLat,
+          lng: flyLng,
+          formatted: `${flyLat.toFixed(6)}, ${flyLng.toFixed(6)}`,
+          dms: '',
+          name: flyName || `${flyLat.toFixed(5)}, ${flyLng.toFixed(5)}`,
+          _ts: Date.now(),
+        })
+        toast.success(`📍 Flying to ${flyName || `${flyLat.toFixed(5)}, ${flyLng.toFixed(5)}`}`)
+      }, 800)
+      return () => clearTimeout(t)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search])
+
 
   const currentFarmer = useMemo(() => {
     return farmers.find(f => f.field_id === selectedFieldId) || farmers[0]
@@ -419,14 +453,20 @@ export default function AdminLandEditorPage() {
         </div>
 
         <div className="flex items-center gap-2.5 flex-wrap">
-          {/* Admin "Go to location" input (DMS & Decimal support) */}
+          {/* Admin "Go to location" — Name + Coordinates two-field form */}
           <form
             onSubmit={handleCoordinateGo}
-            className="relative flex items-center gap-1.5 bg-v2v-softwhite dark:bg-slate-800 border border-v2v-lavendergray dark:border-slate-700 px-2.5 py-1 rounded-xl shadow-inner"
+            className="relative flex items-center gap-1.5 bg-v2v-softwhite dark:bg-slate-800 border border-v2v-lavendergray dark:border-slate-700 px-2.5 py-1 rounded-xl shadow-inner flex-wrap"
           >
-            <span className="text-xs text-v2v-purple dark:text-purple-300 font-bold select-none">
-              📍
-            </span>
+            <span className="text-xs text-v2v-purple dark:text-purple-300 font-bold select-none">📍</span>
+            <input
+              type="text"
+              value={locationName}
+              onChange={(e) => setLocationName(e.target.value)}
+              placeholder="Location name"
+              className="bg-transparent text-xs w-28 focus:outline-none text-slate-800 dark:text-slate-100 placeholder:text-gray-400 font-semibold border-r border-v2v-lavendergray pr-1.5"
+              aria-label="Location name"
+            />
             <input
               type="text"
               value={coordInput}
@@ -434,8 +474,8 @@ export default function AdminLandEditorPage() {
                 setCoordInput(e.target.value)
                 if (coordError) setCoordError('')
               }}
-              placeholder='Go to location (e.g. 9°34&apos;03.0"N 77°40&apos;44.8"E or 9.5675, 77.679111)'
-              className="bg-transparent text-xs w-48 sm:w-64 focus:outline-none text-slate-800 dark:text-slate-100 placeholder:text-gray-400 font-mono"
+              placeholder='e.g. 9°34&apos;03.0"N 77°40&apos;44.8"E'
+              className="bg-transparent text-xs w-44 sm:w-56 focus:outline-none text-slate-800 dark:text-slate-100 placeholder:text-gray-400 font-mono"
               aria-label="Go to location coordinates"
             />
             <button
@@ -653,13 +693,13 @@ export default function AdminLandEditorPage() {
               {targetLocation && (
                 <Marker
                   position={[targetLocation.lat, targetLocation.lng]}
-                  icon={createPinIcon('🎯', '#8A57C0')}
+                  icon={createPinIcon('📍', '#8A57C0')}
                 >
                   <Popup autoPan={true}>
                     <div className="text-xs p-1 space-y-1.5 min-w-[200px]">
                       <div className="flex items-center gap-1.5 font-bold text-v2v-deep">
-                        <span>🎯</span>
-                        <span>Selected Location</span>
+                        <span>📍</span>
+                        <span>{targetLocation.name || 'Selected Location'}</span>
                       </div>
                       <div className="bg-purple-50 p-2 rounded-lg border border-purple-200/60 font-mono text-[11px] text-purple-950 space-y-0.5">
                         <div><strong>Decimal:</strong> {targetLocation.lat.toFixed(6)}, {targetLocation.lng.toFixed(6)}</div>

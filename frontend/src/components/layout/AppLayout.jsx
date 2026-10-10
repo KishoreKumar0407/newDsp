@@ -32,11 +32,23 @@ export default function AppLayout() {
 
   const handleGoBack = (e) => {
     if (e && e.preventDefault) e.preventDefault()
-    navigateBackWithLoader(homeLink, 'Returning to previous page...', 1000)
+    // Check if there's real browser history to go back to
+    const hasHistory =
+      window.history.state &&
+      typeof window.history.state.idx === 'number' &&
+      window.history.state.idx > 0
+    if (hasHistory) {
+      navigate(-1)
+    } else {
+      navigate(homeLink, { replace: true })
+    }
   }
 
   const handleLogoClick = (e) => {
-    if (e && e.preventDefault) e.preventDefault()
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
     setSidebarOpen(false)
     navigateHomeWithLoader('Opening Dashboard...', 1200)
   }
@@ -79,7 +91,8 @@ export default function AppLayout() {
           }}
           className="px-5 py-4 border-b border-v2v-secondary/30 dark:border-slate-800 flex items-center justify-between hover:opacity-90 transition-opacity cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-v2v-purple"
         >
-          <V2VLogo size="md" variant="light" onClick={handleLogoClick} />
+          {/* stopPropagation prevents double-fire since parent div already handles click */}
+          <V2VLogo size="md" variant="light" onClick={(e) => { e.stopPropagation(); handleLogoClick(e) }} />
           <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-v2v-deep dark:bg-slate-800 text-v2v-lavender dark:text-purple-300 border border-v2v-lavender/30 dark:border-slate-700 uppercase group-hover:border-purple-400">
             DSP
           </span>
@@ -145,7 +158,7 @@ export default function AppLayout() {
                 onChange={(e) => handleRoleSwitch(e.target.value)}
                 className="w-full bg-v2v-nearblack dark:bg-slate-900 text-white border border-v2v-secondary/50 dark:border-slate-700 rounded-lg px-2 py-1 text-xs focus:outline-none focus:border-v2v-lavender cursor-pointer"
               >
-                <option value="admin">⚙️ Admin (Full Control)</option>
+                <option value="admin">🛠️ Maintenance (Admin Full Control)</option>
                 <option value="verifier">🛡️ Land Verifier</option>
                 <option value="farmer">🧑‍🌾 Farmer View</option>
               </select>

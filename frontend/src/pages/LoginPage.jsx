@@ -396,14 +396,14 @@ export default function LoginPage() {
               <span>Select Your Role Portal:</span>
               <span className="text-[10px] text-purple-600 font-bold uppercase">Role: {selectedRole}</span>
             </div>
-            <div className="grid grid-cols-4 gap-1.5 bg-gray-100 p-1.5 rounded-2xl border border-gray-200">
+            <div className="grid grid-cols-4 gap-1.5 bg-gray-100 dark:bg-slate-800/90 p-1.5 rounded-2xl border border-gray-200 dark:border-slate-700">
               <button
                 type="button"
                 onClick={() => setSelectedRole('farmer')}
                 className={`py-2 px-1 rounded-xl text-[11px] font-bold transition-all flex flex-col items-center gap-0.5 ${
                   selectedRole === 'farmer'
                     ? 'bg-v2v-deep text-white shadow-md shadow-v2v-deep/30 ring-2 ring-purple-400'
-                    : 'text-gray-700 hover:bg-white'
+                    : 'text-gray-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700'
                 }`}
               >
                 <span className="text-sm">🧑‍🌾</span>
@@ -415,7 +415,7 @@ export default function LoginPage() {
                 className={`py-2 px-1 rounded-xl text-[11px] font-bold transition-all flex flex-col items-center gap-0.5 ${
                   selectedRole === 'consumer'
                     ? 'bg-v2v-deep text-white shadow-md shadow-v2v-deep/30 ring-2 ring-purple-400'
-                    : 'text-gray-700 hover:bg-white'
+                    : 'text-gray-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700'
                 }`}
               >
                 <span className="text-sm">🛒</span>
@@ -427,7 +427,7 @@ export default function LoginPage() {
                 className={`py-2 px-1 rounded-xl text-[11px] font-bold transition-all flex flex-col items-center gap-0.5 ${
                   selectedRole === 'dealer'
                     ? 'bg-v2v-deep text-white shadow-md shadow-v2v-deep/30 ring-2 ring-purple-400'
-                    : 'text-gray-700 hover:bg-white'
+                    : 'text-gray-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700'
                 }`}
               >
                 <span className="text-sm">🏢</span>
@@ -438,12 +438,13 @@ export default function LoginPage() {
                 onClick={() => setSelectedRole('admin')}
                 className={`py-2 px-1 rounded-xl text-[11px] font-bold transition-all flex flex-col items-center gap-0.5 ${
                   selectedRole === 'admin'
-                    ? 'bg-v2v-deep text-white shadow-md shadow-v2v-deep/30 ring-2 ring-purple-400'
-                    : 'text-gray-700 hover:bg-white'
+                    ? 'bg-amber-600 text-white shadow-md shadow-amber-600/30 ring-2 ring-amber-400'
+                    : 'text-gray-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700'
                 }`}
+                title="Admin Maintenance & System Operations Portal"
               >
-                <span className="text-sm">⚙️</span>
-                <span>Admin</span>
+                <span className="text-sm">🛠️</span>
+                <span className="leading-tight text-center">Maintenance (Admin)</span>
               </button>
             </div>
           </div>
@@ -476,9 +477,18 @@ export default function LoginPage() {
                   </div>
                 </div>
               )}
+              {selectedRole === 'admin' && (
+                <div className="p-3 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-300 dark:border-amber-800/60 text-xs text-amber-900 dark:text-amber-200 mb-2 flex items-start gap-2 shadow-sm">
+                  <span className="text-base flex-shrink-0">🛠️</span>
+                  <div>
+                    <span className="font-extrabold block">Admin Maintenance & System Operations Portal</span>
+                    <span className="text-[11px] text-amber-800 dark:text-amber-300">Superuser access for land survey verification, field coordinates editor, farmer approvals, and platform maintenance.</span>
+                  </div>
+                </div>
+              )}
               <div>
                 <label className="label">
-                  {selectedRole === 'farmer' ? 'Farmer Email / Registered ID:' : `${selectedRole.toUpperCase()} Email / Login:`}
+                  {selectedRole === 'farmer' ? 'Farmer Email / Registered ID:' : selectedRole === 'admin' ? 'Maintenance Admin Email / ID:' : `${selectedRole.toUpperCase()} Email / Login:`}
                 </label>
                 <input
                   type="text"
@@ -517,21 +527,29 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full btn-v2v-gradient py-3 text-sm font-bold rounded-xl shadow-lg mt-2 flex items-center justify-center gap-2"
+                className={`w-full py-3 text-sm font-bold rounded-xl shadow-lg mt-2 flex items-center justify-center gap-2 ${
+                  selectedRole === 'admin'
+                    ? 'bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 text-white shadow-amber-600/30 hover:opacity-95'
+                    : 'btn-v2v-gradient'
+                }`}
               >
                 {loading ? (
                   <span>Authenticating...</span>
                 ) : (
                   <>
-                    <span>Sign In as {selectedRole.toUpperCase()}</span>
+                    <span>
+                      {selectedRole === 'admin'
+                        ? 'Sign In to Maintenance (Admin Portal)'
+                        : `Sign In as ${selectedRole.toUpperCase()}`}
+                    </span>
                     <span>→</span>
                   </>
                 )}
               </button>
 
               {/* Quick Fill Demo Helper */}
-              <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
-                <span className="text-gray-500">Quick Demo Credentials:</span>
+              <div className="pt-3 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between text-xs">
+                <span className="text-gray-500 dark:text-slate-400">Quick Demo Credentials:</span>
                 <button
                   type="button"
                   onClick={() => {
@@ -540,9 +558,9 @@ export default function LoginPage() {
                     else if (selectedRole === 'consumer') setLoginForm({ email: 'consumer@farmxt.com', password: 'consumer123' })
                     else if (selectedRole === 'dealer') setLoginForm({ email: 'dealer@farmxt.com', password: 'dealer123' })
                   }}
-                  className="text-v2v-purple font-bold hover:underline"
+                  className="text-v2v-purple dark:text-purple-400 font-bold hover:underline"
                 >
-                  Autofill {selectedRole} →
+                  Autofill {selectedRole === 'admin' ? 'Maintenance Admin' : selectedRole} →
                 </button>
               </div>
             </form>
@@ -644,7 +662,7 @@ export default function LoginPage() {
                       <label className="label mb-0">7) Cultivated Seeds & Crops Yield *</label>
                       <span className="text-[10px] text-purple-700 font-bold">(Select multiple)</span>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-2 bg-gray-50 border border-gray-200 rounded-xl">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-2 bg-gray-50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl">
                       {SEED_CROP_OPTIONS.map((crop) => {
                         const isSelected = farmerReg.crops_yield.includes(crop.label)
                         return (
@@ -655,7 +673,7 @@ export default function LoginPage() {
                             className={`p-2 rounded-lg text-left text-xs font-semibold transition-all flex items-center gap-1.5 border ${
                               isSelected
                                 ? 'bg-v2v-deep text-white border-purple-500 shadow-sm'
-                                : 'bg-white text-gray-700 border-gray-200 hover:border-purple-300'
+                                : 'bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-300 border-gray-200 dark:border-slate-700 hover:border-purple-300 dark:hover:border-purple-600'
                             }`}
                           >
                             <span>{crop.icon}</span>
@@ -820,11 +838,17 @@ export default function LoginPage() {
 
               <button
                 type="submit"
-                className="w-full btn-v2v-gradient py-3 text-sm font-bold rounded-xl shadow-lg mt-3 flex items-center justify-center gap-2"
+                className={`w-full py-3 text-sm font-bold rounded-xl shadow-lg mt-3 flex items-center justify-center gap-2 ${
+                  selectedRole === 'admin'
+                    ? 'bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 text-white shadow-amber-600/30 hover:opacity-95'
+                    : 'btn-v2v-gradient'
+                }`}
               >
                 <span>
                   {selectedRole === 'farmer'
                     ? 'Submit Request for Admin Credential Creation'
+                    : selectedRole === 'admin'
+                    ? 'Register Maintenance Admin Account'
                     : `Submit ${selectedRole.toUpperCase()} Registration`}
                 </span>
                 <span>→</span>
@@ -837,25 +861,25 @@ export default function LoginPage() {
       {/* ── Registration Submission Confirmation Modal ── */}
       {submittedModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-purple-200 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
-              <h3 className="text-lg font-extrabold text-v2v-deep tracking-tight">{submittedModal.title}</h3>
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-purple-200 dark:border-slate-800 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-slate-800">
+              <h3 className="text-lg font-extrabold text-v2v-deep dark:text-purple-300 tracking-tight">{submittedModal.title}</h3>
               <button
                 onClick={() => setSubmittedModal(null)}
-                className="text-gray-400 hover:text-gray-600 text-lg font-bold"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-lg font-bold"
               >
                 ✕
               </button>
             </div>
 
-            <div className="bg-purple-50 p-4 rounded-2xl border border-purple-200 text-xs text-purple-950 space-y-1">
-              <div className="font-bold text-sm text-v2v-deep mb-1">Registration Summary:</div>
+            <div className="bg-purple-50 dark:bg-purple-950/40 p-4 rounded-2xl border border-purple-200 dark:border-purple-800/60 text-xs text-purple-950 dark:text-purple-200 space-y-1">
+              <div className="font-bold text-sm text-v2v-deep dark:text-purple-300 mb-1">Registration Summary:</div>
               {submittedModal.details.map((item, idx) => (
                 <div key={idx} className="font-semibold">{item}</div>
               ))}
             </div>
 
-            <p className="text-xs text-gray-600 leading-relaxed">
+            <p className="text-xs text-gray-600 dark:text-slate-300 leading-relaxed">
               {submittedModal.message}
             </p>
 
