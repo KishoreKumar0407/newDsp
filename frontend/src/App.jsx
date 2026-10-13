@@ -18,6 +18,24 @@ import UsersPage from './pages/UsersPage'
 import MarketplacePage from './pages/MarketplacePage'
 import SurveyorsManagementPage from './pages/SurveyorsManagementPage'
 
+// Consumer Portal Pages
+import ConsumerHomepage from './pages/consumer/ConsumerHomepage'
+import ConsumerProductsPage from './pages/consumer/ConsumerProductsPage'
+import ProductDetailPage from './pages/consumer/ProductDetailPage'
+import BulkBuyingPage from './pages/consumer/BulkBuyingPage'
+import CartPage from './pages/consumer/CartPage'
+import CheckoutPage from './pages/consumer/CheckoutPage'
+import OrdersPage from './pages/consumer/OrdersPage'
+
+// Dealer Portal Pages
+import DealerHomepage from './pages/dealer/DealerHomepage'
+import DealerProductsPage from './pages/dealer/DealerProductsPage'
+import DealerProductDetailPage from './pages/dealer/DealerProductDetailPage'
+import DealerBulkBuyingPage from './pages/dealer/DealerBulkBuyingPage'
+import DealerCartPage from './pages/dealer/DealerCartPage'
+import DealerCheckoutPage from './pages/dealer/DealerCheckoutPage'
+import DealerOrdersPage from './pages/dealer/DealerOrdersPage'
+
 import { NavigationLoaderProvider } from './contexts/NavigationLoaderContext'
 
 // Layout
@@ -35,6 +53,24 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<LoginPage />} />
           <Route path="/showcase" element={<LandingPage />} />
+
+          {/* Consumer Portal Routes - Public for testing */}
+          <Route path="/consumer" element={<ConsumerHomepage />} />
+          <Route path="/consumer/products" element={<ConsumerProductsPage />} />
+          <Route path="/consumer/product/:id" element={<ProductDetailPage />} />
+          <Route path="/consumer/bulk-buying" element={<BulkBuyingPage />} />
+          <Route path="/consumer/cart" element={<CartPage />} />
+          <Route path="/consumer/checkout" element={<CheckoutPage />} />
+          <Route path="/consumer/orders" element={<OrdersPage />} />
+
+          {/* Dealer Portal Routes - Public for testing */}
+          <Route path="/dealer" element={<DealerHomepage />} />
+          <Route path="/dealer/products" element={<DealerProductsPage />} />
+          <Route path="/dealer/product/:id" element={<DealerProductDetailPage />} />
+          <Route path="/dealer/bulk-buying" element={<DealerBulkBuyingPage />} />
+          <Route path="/dealer/cart" element={<DealerCartPage />} />
+          <Route path="/dealer/checkout" element={<DealerCheckoutPage />} />
+          <Route path="/dealer/orders" element={<DealerOrdersPage />} />
 
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>

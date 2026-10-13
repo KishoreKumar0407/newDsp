@@ -22,8 +22,19 @@ const NAV_LINKS = [
   { to: '/marketplace',    label: 'Marketplace Hub',        icon: StoreIcon,      roles: ['verifier'] },
   { to: '/data-tools',     label: 'Export & Reports',       icon: UploadIcon,     roles: ['verifier'] },
 
-  // ── CONSUMER & DEALER ──
-  { to: '/marketplace',    label: 'Marketplace Hub',        icon: StoreIcon,      roles: ['consumer', 'dealer'] },
+  // ── CONSUMER ──
+  { to: '/consumer',       label: 'Consumer Home',          icon: HomeIcon,       roles: ['consumer'] },
+  { to: '/consumer/products', label: 'Browse Products',     icon: StoreIcon,      roles: ['consumer'] },
+  { to: '/consumer/bulk-buying', label: 'Bulk Buying',       icon: UploadIcon,     roles: ['consumer'] },
+  { to: '/consumer/cart',  label: 'Shopping Cart',          icon: ChipIcon,       roles: ['consumer'] },
+  { to: '/consumer/orders', label: 'My Orders',             icon: UsersIcon,      roles: ['consumer'] },
+
+  // ── DEALER ──
+  { to: '/dealer',         label: 'Dealer Home',             icon: HomeIcon,       roles: ['dealer'] },
+  { to: '/dealer/products', label: 'Browse Products',        icon: StoreIcon,      roles: ['dealer'] },
+  { to: '/dealer/bulk-buying', label: 'Bulk Buying',         icon: UploadIcon,     roles: ['dealer'] },
+  { to: '/dealer/cart',    label: 'Shopping Cart',           icon: ChipIcon,       roles: ['dealer'] },
+  { to: '/dealer/orders',  label: 'My Orders',              icon: UsersIcon,      roles: ['dealer'] },
 ]
 
 export default function AppLayout() {
@@ -90,7 +101,8 @@ export default function AppLayout() {
     if (newRole === 'farmer') navigate('/farmer')
     else if (newRole === 'admin') navigate('/admin/farmers')
     else if (newRole === 'verifier') navigate('/admin/editor/field-1')
-    else if (newRole === 'consumer' || newRole === 'dealer') navigate('/marketplace')
+    else if (newRole === 'consumer') navigate('/consumer')
+    else if (newRole === 'dealer') navigate('/dealer')
     else navigate('/dashboard')
   }
 
@@ -170,6 +182,38 @@ export default function AppLayout() {
                 <option value="farmer">🧑‍🌾 Farmer View (Preview)</option>
               </select>
             </div>
+          ) : currentRole === 'consumer' ? (
+            /* Consumer Role Switcher */
+            <div className="bg-v2v-charcoal dark:bg-slate-800/60 p-2 rounded-xl border border-v2v-secondary/40 dark:border-slate-700/50 text-xs">
+              <div className="flex items-center justify-between text-[10px] text-gray-400 mb-1">
+                <span>ACTIVE ROLE:</span>
+                <span className="font-bold text-v2v-lavender dark:text-purple-300 uppercase">{currentRole}</span>
+              </div>
+              <select
+                value={currentRole}
+                onChange={(e) => handleRoleSwitch(e.target.value)}
+                className="w-full bg-v2v-nearblack dark:bg-slate-900 text-white border border-v2v-secondary/50 dark:border-slate-700 rounded-lg px-2 py-1 text-xs focus:outline-none focus:border-v2v-lavender cursor-pointer"
+              >
+                <option value="consumer">🛒 Consumer Marketplace</option>
+                <option value="dealer">🏭 Dealer Marketplace</option>
+              </select>
+            </div>
+          ) : currentRole === 'dealer' ? (
+            /* Dealer Role Switcher */
+            <div className="bg-v2v-charcoal dark:bg-slate-800/60 p-2 rounded-xl border border-v2v-secondary/40 dark:border-slate-700/50 text-xs">
+              <div className="flex items-center justify-between text-[10px] text-gray-400 mb-1">
+                <span>ACTIVE ROLE:</span>
+                <span className="font-bold text-v2v-lavender dark:text-purple-300 uppercase">{currentRole}</span>
+              </div>
+              <select
+                value={currentRole}
+                onChange={(e) => handleRoleSwitch(e.target.value)}
+                className="w-full bg-v2v-nearblack dark:bg-slate-900 text-white border border-v2v-secondary/50 dark:border-slate-700 rounded-lg px-2 py-1 text-xs focus:outline-none focus:border-v2v-lavender cursor-pointer"
+              >
+                <option value="dealer">🏭 Dealer Marketplace</option>
+                <option value="consumer">🛒 Consumer Marketplace</option>
+              </select>
+            </div>
           ) : (
             /* Admin Role Switcher — Pure Administrative Command */
             <div className="bg-v2v-charcoal dark:bg-slate-800/60 p-2 rounded-xl border border-v2v-secondary/40 dark:border-slate-700/50 text-xs">
@@ -185,6 +229,8 @@ export default function AppLayout() {
                 <option value="admin">⚙️ Admin (Farmers & Surveyors)</option>
                 <option value="verifier">🛡️ Land Verifier (Spatial Operations)</option>
                 <option value="farmer">🧑‍🌾 Farmer View</option>
+                <option value="consumer">🛒 Consumer Marketplace</option>
+                <option value="dealer">🏭 Dealer Marketplace</option>
               </select>
             </div>
           )}
