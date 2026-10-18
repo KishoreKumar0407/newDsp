@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { DEMO_PRODUCTS, PRODUCE_CATEGORIES, GRADE_CLASSIFICATIONS, RIPENESS_STAGES, addToCart, getCart } from '../../lib/consumerData.js'
-import { getPricingRecommendation, generatePriceTiers, calculateTotalCost } from '../../lib/aiPricingEngine.js'
+import { getPricingRecommendation, calculateTotalCost } from '../../lib/aiPricingEngine.js'
 import { getMarketPriceComparison, getDemandAnalysis } from '../../lib/marketIntelligence.js'
 
 export default function ProductDetailPage() {
@@ -39,7 +39,6 @@ export default function ProductDetailPage() {
   }
 
   const pricing = getPricingRecommendation(product)
-  const priceTiers = generatePriceTiers(product)
   const marketComparison = getMarketPriceComparison(product)
   const demand = getDemandAnalysis(product.category)
   const totalCost = calculateTotalCost(product, quantity)
@@ -243,35 +242,6 @@ export default function ProductDetailPage() {
                   Only {product.availableQuantity} kg available
                 </p>
               )}
-            </div>
-
-            {/* Bulk Price Tiers */}
-            <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
-                💰 Bulk Price Tiers
-              </h3>
-              <div className="space-y-2">
-                {priceTiers.map((tier, idx) => (
-                  <div
-                    key={idx}
-                    className={`flex items-center justify-between p-3 rounded-lg ${
-                      quantity >= tier.minQuantity && quantity <= tier.maxQuantity
-                        ? 'bg-green-100 border-2 border-green-500'
-                        : 'bg-slate- dark:bg-slate-50 dark:bg-slate-900'
-                    }`}
-                  >
-                    <div>
-                      <span className="font-medium text-slate-900 dark:text-slate-100">
-                        {tier.minQuantity} - {tier.maxQuantity} kg
-                      </span>
-                    </div>
-                    <div className="text-right">
-                      <span className="font-bold text-slate-900 dark:text-slate-100">₹{tier.pricePerKg}/kg</span>
-                      <span className="text-sm text-v2v-deep dark:text-purple-400 ml-2">{tier.discount} off</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </div>

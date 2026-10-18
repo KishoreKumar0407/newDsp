@@ -27,7 +27,6 @@ const NAV_LINKS = [
   // ── CONSUMER ──
   { to: '/consumer',       label: 'Consumer Home',          icon: HomeIcon,       roles: ['consumer'] },
   { to: '/consumer/products', label: 'Browse Products',     icon: StoreIcon,      roles: ['consumer'] },
-  { to: '/consumer/bulk-buying', label: 'Bulk Buying',       icon: UploadIcon,     roles: ['consumer'] },
   { to: '/consumer/cart',  label: 'Shopping Cart',          icon: ChipIcon,       roles: ['consumer'] },
   { to: '/consumer/orders', label: 'My Orders',             icon: UsersIcon,      roles: ['consumer'] },
 

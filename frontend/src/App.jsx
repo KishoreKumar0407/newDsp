@@ -24,7 +24,6 @@ import SurveyorSellPage from './pages/SurveyorSellPage'
 import ConsumerHomepage from './pages/consumer/ConsumerHomepage'
 import ConsumerProductsPage from './pages/consumer/ConsumerProductsPage'
 import ProductDetailPage from './pages/consumer/ProductDetailPage'
-import BulkBuyingPage from './pages/consumer/BulkBuyingPage'
 import CartPage from './pages/consumer/CartPage'
 import CheckoutPage from './pages/consumer/CheckoutPage'
 import OrdersPage from './pages/consumer/OrdersPage'
@@ -61,7 +60,6 @@ export default function App() {
             <Route path="/consumer" element={<ConsumerHomepage />} />
             <Route path="/consumer/products" element={<ConsumerProductsPage />} />
             <Route path="/consumer/product/:id" element={<ProductDetailPage />} />
-            <Route path="/consumer/bulk-buying" element={<BulkBuyingPage />} />
             <Route path="/consumer/cart" element={<CartPage />} />
             <Route path="/consumer/checkout" element={<CheckoutPage />} />
             <Route path="/consumer/orders" element={<OrdersPage />} />

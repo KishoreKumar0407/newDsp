@@ -93,8 +93,10 @@ export default function LoginPage() {
         navigate('/farmer', { replace: true })
       } else if (user.role === 'admin' || user.role === 'verifier') {
         navigate('/admin/farmers', { replace: true })
-      } else if (user.role === 'consumer' || user.role === 'dealer') {
-        navigate('/marketplace', { replace: true })
+      } else if (user.role === 'consumer') {
+        navigate('/consumer', { replace: true })
+      } else if (user.role === 'dealer') {
+        navigate('/dealer', { replace: true })
       } else {
         navigate('/dashboard', { replace: true })
       }
@@ -138,8 +140,10 @@ export default function LoginPage() {
           navigate('/farmer', { replace: true })
         } else if (matchedCred.role === 'admin') {
           navigate('/admin/farmers', { replace: true })
-        } else if (matchedCred.role === 'consumer' || matchedCred.role === 'dealer') {
-          navigate('/marketplace', { replace: true })
+        } else if (matchedCred.role === 'consumer') {
+          navigate('/consumer', { replace: true })
+        } else if (matchedCred.role === 'dealer') {
+          navigate('/dealer', { replace: true })
         } else {
           navigate('/dashboard', { replace: true })
         }
@@ -167,8 +171,10 @@ export default function LoginPage() {
       const role = loggedUser?.role || selectedRole
       if (role === 'admin' || role === 'verifier') {
         navigate('/admin/farmers', { replace: true })
-      } else if (role === 'consumer' || role === 'dealer') {
-        navigate('/marketplace', { replace: true })
+      } else if (role === 'consumer') {
+        navigate('/consumer', { replace: true })
+      } else if (role === 'dealer') {
+        navigate('/dealer', { replace: true })
       } else {
         navigate(from ?? '/dashboard', { replace: true })
       }
@@ -477,15 +483,7 @@ export default function LoginPage() {
                   </div>
                 </div>
               )}
-              {selectedRole === 'admin' && (
-                <div className="p-3 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-300 dark:border-amber-800/60 text-xs text-amber-900 dark:text-amber-200 mb-2 flex items-start gap-2 shadow-sm">
-                  <span className="text-base flex-shrink-0">🛠️</span>
-                  <div>
-                    <span className="font-extrabold block">Admin Maintenance & System Operations Portal</span>
-                    <span className="text-[11px] text-amber-800 dark:text-amber-300">Superuser access for land survey verification, field coordinates editor, farmer approvals, and platform maintenance.</span>
-                  </div>
-                </div>
-              )}
+
               <div>
                 <label className="label">
                   {selectedRole === 'farmer' ? 'Farmer Email / Registered ID:' : selectedRole === 'admin' ? 'Maintenance Admin Email / ID:' : `${selectedRole.toUpperCase()} Email / Login:`}
@@ -546,23 +544,6 @@ export default function LoginPage() {
                   </>
                 )}
               </button>
-
-              {/* Quick Fill Demo Helper */}
-              <div className="pt-3 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between text-xs">
-                <span className="text-gray-500 dark:text-slate-400">Quick Demo Credentials:</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (selectedRole === 'farmer') setLoginForm({ email: 'farmer@v2vtech.com', password: 'farmer123' })
-                    else if (selectedRole === 'admin') setLoginForm({ email: 'admin@farmxt.com', password: 'admin123' })
-                    else if (selectedRole === 'consumer') setLoginForm({ email: 'consumer@farmxt.com', password: 'consumer123' })
-                    else if (selectedRole === 'dealer') setLoginForm({ email: 'dealer@farmxt.com', password: 'dealer123' })
-                  }}
-                  className="text-v2v-purple dark:text-purple-400 font-bold hover:underline"
-                >
-                  Autofill {selectedRole === 'admin' ? 'Maintenance Admin' : selectedRole} →
-                </button>
-              </div>
             </form>
           )}
 
