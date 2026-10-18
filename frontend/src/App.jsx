@@ -17,6 +17,8 @@ import DataToolsPage from './pages/DataToolsPage'
 import UsersPage from './pages/UsersPage'
 import MarketplacePage from './pages/MarketplacePage'
 import SurveyorsManagementPage from './pages/SurveyorsManagementPage'
+import FarmerSellPage from './pages/FarmerSellPage'
+import SurveyorSellPage from './pages/SurveyorSellPage'
 
 // Consumer Portal Pages
 import ConsumerHomepage from './pages/consumer/ConsumerHomepage'
@@ -55,22 +57,24 @@ export default function App() {
           <Route path="/showcase" element={<LandingPage />} />
 
           {/* Consumer Portal Routes - Public for testing */}
-          <Route path="/consumer" element={<ConsumerHomepage />} />
-          <Route path="/consumer/products" element={<ConsumerProductsPage />} />
-          <Route path="/consumer/product/:id" element={<ProductDetailPage />} />
-          <Route path="/consumer/bulk-buying" element={<BulkBuyingPage />} />
-          <Route path="/consumer/cart" element={<CartPage />} />
-          <Route path="/consumer/checkout" element={<CheckoutPage />} />
-          <Route path="/consumer/orders" element={<OrdersPage />} />
+          <Route element={<AppLayout />}>
+            <Route path="/consumer" element={<ConsumerHomepage />} />
+            <Route path="/consumer/products" element={<ConsumerProductsPage />} />
+            <Route path="/consumer/product/:id" element={<ProductDetailPage />} />
+            <Route path="/consumer/bulk-buying" element={<BulkBuyingPage />} />
+            <Route path="/consumer/cart" element={<CartPage />} />
+            <Route path="/consumer/checkout" element={<CheckoutPage />} />
+            <Route path="/consumer/orders" element={<OrdersPage />} />
 
-          {/* Dealer Portal Routes - Public for testing */}
-          <Route path="/dealer" element={<DealerHomepage />} />
-          <Route path="/dealer/products" element={<DealerProductsPage />} />
-          <Route path="/dealer/product/:id" element={<DealerProductDetailPage />} />
-          <Route path="/dealer/bulk-buying" element={<DealerBulkBuyingPage />} />
-          <Route path="/dealer/cart" element={<DealerCartPage />} />
-          <Route path="/dealer/checkout" element={<DealerCheckoutPage />} />
-          <Route path="/dealer/orders" element={<DealerOrdersPage />} />
+            {/* Dealer Portal Routes - Public for testing */}
+            <Route path="/dealer" element={<DealerHomepage />} />
+            <Route path="/dealer/products" element={<DealerProductsPage />} />
+            <Route path="/dealer/product/:id" element={<DealerProductDetailPage />} />
+            <Route path="/dealer/bulk-buying" element={<DealerBulkBuyingPage />} />
+            <Route path="/dealer/cart" element={<DealerCartPage />} />
+            <Route path="/dealer/checkout" element={<DealerCheckoutPage />} />
+            <Route path="/dealer/orders" element={<DealerOrdersPage />} />
+          </Route>
 
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
@@ -78,6 +82,8 @@ export default function App() {
               <Route path="/marketplace" element={<MarketplacePage />} />
               {/* Farmer Portal: Dedicated interactive farmland map (farmer, admin, verifier) */}
               <Route path="/farmer" element={<FarmerDashboardPage />} />
+              <Route path="/farmer/sell" element={<FarmerSellPage />} />
+              <Route path="/surveyor/sell" element={<SurveyorSellPage />} />
 
               {/* Admin & Verifier Management Console (blocked for farmer) */}
               <Route element={<ProtectedRoute allowedRoles={['admin', 'verifier']} />}>

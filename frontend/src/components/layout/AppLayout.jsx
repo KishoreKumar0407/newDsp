@@ -8,6 +8,7 @@ import ThemeToggle from '../common/ThemeToggle'
 const NAV_LINKS = [
   // ── FARMER (strictly restricted to their own land) ──
   { to: '/farmer',         label: 'Farmland Digital Twin',  icon: MapIcon,        roles: ['farmer'] },
+  { to: '/farmer/sell',    label: 'Sell Produce',           icon: UploadIcon,     roles: ['farmer'] },
 
   // ── ADMIN (ONLY: Farmers List, New Farmer Requests, Surveyor Creation) ──
   { to: '/admin/farmers',  label: 'Farmers List',            icon: UsersIcon,      roles: ['admin'] },
@@ -19,6 +20,7 @@ const NAV_LINKS = [
   { to: '/admin/editor/field-1', label: 'Land & Drawing Editor', icon: EditIcon, roles: ['verifier'] },
   { to: '/dashboard',      label: 'Platform Overview',      icon: HomeIcon,       roles: ['verifier'] },
   { to: '/admin/farmers',  label: 'Farmers Directory',      icon: UsersIcon,      roles: ['verifier'] },
+  { to: '/surveyor/sell',  label: 'Add Farmer Goods',        icon: UploadIcon,     roles: ['verifier'] },
   { to: '/marketplace',    label: 'Marketplace Hub',        icon: StoreIcon,      roles: ['verifier'] },
   { to: '/data-tools',     label: 'Export & Reports',       icon: UploadIcon,     roles: ['verifier'] },
 

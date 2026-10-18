@@ -33,6 +33,12 @@ export default function ProtectedRoute({ allowedRoles }) {
     if (user.role === 'verifier') {
       return <Navigate to="/admin/farmers" replace />
     }
+    if (user.role === 'consumer') {
+      return <Navigate to="/consumer" replace />
+    }
+    if (user.role === 'dealer') {
+      return <Navigate to="/dealer" replace />
+    }
     return <Navigate to="/farmer" replace />
   }
 

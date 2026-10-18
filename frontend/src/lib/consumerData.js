@@ -154,6 +154,60 @@ export const MARKET_PRICES = {
   chilli: { price: 90, source: 'Guntur Market', location: 'Andhra Pradesh', timestamp: '2024-01-15' },
 }
 
+// ── Farmer Inventory Management (localStorage) ───────────────────────────────────
+const FARMER_INVENTORY_KEY = 'farmxt_farmer_inventory_v1'
+
+export function getFarmerInventory() {
+  try {
+    const stored = localStorage.getItem(FARMER_INVENTORY_KEY)
+    return stored ? JSON.parse(stored) : []
+  } catch {
+    return []
+  }
+}
+
+export function addFarmerProduct(product) {
+  const inventory = getFarmerInventory()
+  const newProduct = {
+    ...product,
+    id: `farmer_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    createdAt: new Date().toISOString(),
+  }
+  inventory.push(newProduct)
+  localStorage.setItem(FARMER_INVENTORY_KEY, JSON.stringify(inventory))
+  return newProduct
+}
+
+export function updateFarmerProduct(productId, updates) {
+  const inventory = getFarmerInventory()
+  const index = inventory.findIndex(p => p.id === productId)
+  if (index !== -1) {
+    inventory[index] = { ...inventory[index], ...updates, updatedAt: new Date().toISOString() }
+    localStorage.setItem(FARMER_INVENTORY_KEY, JSON.stringify(inventory))
+    return inventory[index]
+  }
+  return null
+}
+
+export function deleteFarmerProduct(productId) {
+  const inventory = getFarmerInventory()
+  const filtered = inventory.filter(p => p.id !== productId)
+  localStorage.setItem(FARMER_INVENTORY_KEY, JSON.stringify(filtered))
+  return filtered
+}
+
+export function getFarmerProductsByFarmer(farmerName) {
+  const inventory = getFarmerInventory()
+  return inventory.filter(p => p.farmerName === farmerName)
+}
+
+// Get all products (demo + farmer added)
+export function getAllProducts() {
+  const demoProducts = DEMO_PRODUCTS.map(p => ({ ...p, source: 'demo' }))
+  const farmerProducts = getFarmerInventory().map(p => ({ ...p, source: 'farmer' }))
+  return [...demoProducts, ...farmerProducts]
+}
+
 // ── Cart Management (localStorage) ───────────────────────────────────────────────
 const CART_STORAGE_KEY = 'farmxt_cart_v1'
 const ORDERS_STORAGE_KEY = 'farmxt_orders_v1'

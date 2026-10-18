@@ -85,28 +85,28 @@ export default function CheckoutPage() {
 
   if (orderPlaced) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-orange-50 flex items-center justify-center">
-        <div className="bg-white rounded-xl shadow-md p-12 max-w-md w-full text-center">
+      <div className="min-h-screen bg-gradient-to-br bg-v2v-softwhite flex items-center justify-center">
+        <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-12 max-w-md w-full text-center">
           <div className="text-6xl mb-4">✅</div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Order Placed Successfully!</h1>
-          <p className="text-gray-600 mb-4">Your order has been confirmed</p>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">Order Placed Successfully!</h1>
+          <p className="text-slate-600 dark:text-slate-400 mb-4">Your order has been confirmed</p>
           <div className="bg-green-50 rounded-lg p-4 mb-6">
-            <p className="text-sm text-gray-600">Order ID</p>
-            <p className="text-xl font-bold text-green-600">{orderId}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">Order ID</p>
+            <p className="text-xl font-bold text-v2v-deep dark:text-purple-400">{orderId}</p>
           </div>
-          <p className="text-sm text-gray-500 mb-6">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
             You will receive a confirmation email at {formData.email}
           </p>
           <div className="space-y-3">
             <Link
               to="/consumer/orders"
-              className="block w-full py-3 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition-colors"
+              className="block w-full py-3 bg-v2v-gradient text-white rounded-lg font-bold hover:opacity-90 transition-colors"
             >
               View Order Details
             </Link>
             <Link
               to="/consumer"
-              className="block w-full py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+              className="block w-full py-3 bg-slate- dark:bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 dark:text-slate-300 rounded-lg font-medium hover:bg-slate- dark:bg-slate-200 transition-colors"
             >
               Return to Home
             </Link>
@@ -117,34 +117,34 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-orange-50">
+    <div className="min-h-screen bg-gradient-to-br bg-v2v-softwhite">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
+      <div className="bg-white dark:bg-slate- dark:bg-slate-800 shadow-sm border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/consumer/cart" className="text-green-600 hover:text-green-700 font-bold">
+            <Link to="/consumer/cart" className="text-v2v-deep dark:text-purple-400 hover:text-v2v-deep dark:text-purple-400 font-bold">
               ← Back to Cart
             </Link>
-            <span className="text-gray-600">CHECKOUT (DEMO)</span>
+            <span className="text-slate-600 dark:text-slate-400">CHECKOUT (DEMO)</span>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Checkout</h1>
-          <p className="text-gray-600">Complete your order details</p>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">Checkout</h1>
+          <p className="text-slate-600 dark:text-slate-400">Complete your order details</p>
         </div>
 
         <form onSubmit={handleSubmit} className="grid lg:grid-cols-3 gap-8">
           {/* Checkout Form */}
           <div className="lg:col-span-2 space-y-6">
             {/* Contact Information */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Contact Information</h2>
+            <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">Contact Information</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 dark:text-slate-300 mb-2">
                     Full Name *
                   </label>
                   <input
@@ -153,12 +153,12 @@ export default function CheckoutPage() {
                     value={formData.fullName}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-v2v-lavender dark:focus:ring-purple-400 focus:border-transparent"
                     placeholder="John Doe"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 dark:text-slate-300 mb-2">
                     Email *
                   </label>
                   <input
@@ -167,12 +167,12 @@ export default function CheckoutPage() {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-v2v-lavender dark:focus:ring-purple-400 focus:border-transparent"
                     placeholder="john@example.com"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 dark:text-slate-300 mb-2">
                     Phone *
                   </label>
                   <input
@@ -181,7 +181,7 @@ export default function CheckoutPage() {
                     value={formData.phone}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-v2v-lavender dark:focus:ring-purple-400 focus:border-transparent"
                     placeholder="+91 98765 43210"
                   />
                 </div>
@@ -189,11 +189,11 @@ export default function CheckoutPage() {
             </div>
 
             {/* Delivery Address */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Delivery Address</h2>
+            <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">Delivery Address</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 dark:text-slate-300 mb-2">
                     Street Address *
                   </label>
                   <input
@@ -202,13 +202,13 @@ export default function CheckoutPage() {
                     value={formData.address}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-v2v-lavender dark:focus:ring-purple-400 focus:border-transparent"
                     placeholder="123 Main Street, Apartment 4B"
                   />
                 </div>
                 <div className="grid md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 dark:text-slate-300 mb-2">
                       City *
                     </label>
                     <input
@@ -217,12 +217,12 @@ export default function CheckoutPage() {
                       value={formData.city}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-v2v-lavender dark:focus:ring-purple-400 focus:border-transparent"
                       placeholder="Mumbai"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 dark:text-slate-300 mb-2">
                       State *
                     </label>
                     <input
@@ -231,12 +231,12 @@ export default function CheckoutPage() {
                       value={formData.state}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-v2v-lavender dark:focus:ring-purple-400 focus:border-transparent"
                       placeholder="Maharashtra"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 dark:text-slate-300 mb-2">
                       PIN Code *
                     </label>
                     <input
@@ -245,7 +245,7 @@ export default function CheckoutPage() {
                       value={formData.pincode}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-v2v-lavender dark:focus:ring-purple-400 focus:border-transparent"
                       placeholder="400001"
                     />
                   </div>
@@ -254,11 +254,11 @@ export default function CheckoutPage() {
             </div>
 
             {/* Delivery Preferences */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Delivery Preferences</h2>
+            <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">Delivery Preferences</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 dark:text-slate-300 mb-2">
                     Preferred Delivery Date
                   </label>
                   <input
@@ -266,18 +266,18 @@ export default function CheckoutPage() {
                     name="deliveryDate"
                     value={formData.deliveryDate}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-v2v-lavender dark:focus:ring-purple-400 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 dark:text-slate-300 mb-2">
                     Preferred Time Slot
                   </label>
                   <select
                     name="deliveryTime"
                     value={formData.deliveryTime}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-v2v-lavender dark:focus:ring-purple-400 focus:border-transparent"
                   >
                     <option value="">Select time slot</option>
                     <option value="morning">Morning (9 AM - 12 PM)</option>
@@ -289,8 +289,8 @@ export default function CheckoutPage() {
             </div>
 
             {/* Payment Method */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Payment Method</h2>
+            <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">Payment Method</h2>
               <div className="space-y-4">
                 <div className="flex gap-4">
                   <label className="flex items-center gap-2 cursor-pointer">
@@ -300,7 +300,7 @@ export default function CheckoutPage() {
                       value="upi"
                       checked={formData.paymentMethod === 'upi'}
                       onChange={handleInputChange}
-                      className="w-4 h-4 text-green-600"
+                      className="w-4 h-4 text-v2v-deep dark:text-purple-400"
                     />
                     <span>UPI / GPay</span>
                   </label>
@@ -311,7 +311,7 @@ export default function CheckoutPage() {
                       value="card"
                       checked={formData.paymentMethod === 'card'}
                       onChange={handleInputChange}
-                      className="w-4 h-4 text-green-600"
+                      className="w-4 h-4 text-v2v-deep dark:text-purple-400"
                     />
                     <span>Credit/Debit Card</span>
                   </label>
@@ -322,7 +322,7 @@ export default function CheckoutPage() {
                       value="cod"
                       checked={formData.paymentMethod === 'cod'}
                       onChange={handleInputChange}
-                      className="w-4 h-4 text-green-600"
+                      className="w-4 h-4 text-v2v-deep dark:text-purple-400"
                     />
                     <span>Cash on Delivery</span>
                   </label>
@@ -330,7 +330,7 @@ export default function CheckoutPage() {
 
                 {formData.paymentMethod === 'upi' && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 dark:text-slate-300 mb-2">
                       UPI ID
                     </label>
                     <input
@@ -339,7 +339,7 @@ export default function CheckoutPage() {
                       value={formData.upiId}
                       onChange={handleInputChange}
                       placeholder="yourname@upi"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-v2v-lavender dark:focus:ring-purple-400 focus:border-transparent"
                     />
                   </div>
                 )}
@@ -347,7 +347,7 @@ export default function CheckoutPage() {
                 {formData.paymentMethod === 'card' && (
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 dark:text-slate-300 mb-2">
                         Card Number
                       </label>
                       <input
@@ -356,12 +356,12 @@ export default function CheckoutPage() {
                         value={formData.cardNumber}
                         onChange={handleInputChange}
                         placeholder="1234 5678 9012 3456"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-v2v-lavender dark:focus:ring-purple-400 focus:border-transparent"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 dark:text-slate-300 mb-2">
                           Expiry Date
                         </label>
                         <input
@@ -370,11 +370,11 @@ export default function CheckoutPage() {
                           value={formData.cardExpiry}
                           onChange={handleInputChange}
                           placeholder="MM/YY"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-v2v-lavender dark:focus:ring-purple-400 focus:border-transparent"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 dark:text-slate-300 mb-2">
                           CVV
                         </label>
                         <input
@@ -383,7 +383,7 @@ export default function CheckoutPage() {
                           value={formData.cardCvv}
                           onChange={handleInputChange}
                           placeholder="123"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-v2v-lavender dark:focus:ring-purple-400 focus:border-transparent"
                         />
                       </div>
                     </div>
@@ -395,40 +395,40 @@ export default function CheckoutPage() {
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-md p-6 sticky top-4">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Order Summary</h2>
+            <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-6 sticky top-4">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">Order Summary</h2>
 
               {/* Cart Items */}
               <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
                 {cart.map(item => (
                   <div key={item.productId} className="flex justify-between text-sm">
                     <div>
-                      <p className="font-medium text-gray-800">{item.name}</p>
-                      <p className="text-gray-500">{item.quantity} kg × ₹{item.pricePerKg}/kg</p>
+                      <p className="font-medium text-slate-900 dark:text-slate-100">{item.name}</p>
+                      <p className="text-slate-500 dark:text-slate-400">{item.quantity} kg × ₹{item.pricePerKg}/kg</p>
                     </div>
-                    <span className="font-bold text-gray-800">₹{(item.pricePerKg * item.quantity).toLocaleString()}</span>
+                    <span className="font-bold text-slate-900 dark:text-slate-100">₹{(item.pricePerKg * item.quantity).toLocaleString()}</span>
                   </div>
                 ))}
               </div>
 
               {/* Totals */}
-              <div className="border-t border-gray-200 pt-4 space-y-2">
+              <div className="border-t border-slate-200 pt-4 space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="font-bold text-gray-800">₹{cartTotal.toLocaleString()}</span>
+                  <span className="text-slate-600 dark:text-slate-400">Subtotal</span>
+                  <span className="font-bold text-slate-900 dark:text-slate-100">₹{cartTotal.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Delivery Fee</span>
-                  <span className="font-bold text-green-600">FREE</span>
+                  <span className="text-slate-600 dark:text-slate-400">Delivery Fee</span>
+                  <span className="font-bold text-v2v-deep dark:text-purple-400">FREE</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Tax (GST)</span>
-                  <span className="font-bold text-gray-800">₹0</span>
+                  <span className="text-slate-600 dark:text-slate-400">Tax (GST)</span>
+                  <span className="font-bold text-slate-900 dark:text-slate-100">₹0</span>
                 </div>
-                <div className="border-t border-gray-200 pt-2">
+                <div className="border-t border-slate-200 pt-2">
                   <div className="flex justify-between">
-                    <span className="text-lg font-bold text-gray-800">Total</span>
-                    <span className="text-2xl font-bold text-green-600">₹{cartTotal.toLocaleString()}</span>
+                    <span className="text-lg font-bold text-slate-900 dark:text-slate-100">Total</span>
+                    <span className="text-2xl font-bold text-v2v-deep dark:text-purple-400">₹{cartTotal.toLocaleString()}</span>
                   </div>
                 </div>
               </div>
@@ -445,8 +445,8 @@ export default function CheckoutPage() {
                 disabled={isProcessing}
                 className={`w-full py-3 rounded-lg font-bold ${
                   isProcessing
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700'
+                    ? 'bg-slate- dark:bg-slate-300 text-slate-500 dark:text-slate-400 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-v2v-gradient to-indigo-600 text-white hover:from-green-700 hover:to-emerald-700'
                 } transition-all shadow-md`}
               >
                 {isProcessing ? 'Processing...' : `Place Order • ₹${cartTotal.toLocaleString()}`}

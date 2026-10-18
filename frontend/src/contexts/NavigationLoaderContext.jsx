@@ -77,7 +77,8 @@ export function NavigationLoaderProvider({ children }) {
     const role = user.role || 'farmer'
     if (role === 'farmer') return '/farmer'
     if (role === 'admin' || role === 'verifier') return '/admin/farmers'
-    if (role === 'consumer' || role === 'dealer') return '/marketplace'
+    if (role === 'consumer') return '/consumer'
+    if (role === 'dealer') return '/dealer'
     return '/dashboard'
   }, [user])
 
