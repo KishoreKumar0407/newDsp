@@ -3,6 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import ThemeToggle from '../components/common/ThemeToggle'
 import farmStorage from '../lib/farmStorage'
+import { getNavTrail, saveNavTrail, recordNavRoute } from '../lib/navigationHistory'
 
 // Pre-defined Seeds & Crops list for Farmer Registration multi-select
 const SEED_CROP_OPTIONS = [
@@ -285,18 +286,39 @@ export default function LoginPage() {
 
   const targetHomePath = user ? (user.role === 'farmer' ? '/farmer' : (user.role === 'admin' || user.role === 'verifier' ? '/admin/farmers' : (user.role === 'consumer' || user.role === 'dealer' ? '/marketplace' : '/dashboard'))) : '/'
 
+  useEffect(() => {
+    recordNavRoute(location.pathname, location.search)
+  }, [location.pathname, location.search])
+
   const handleGoBack = (e) => {
-    if (e) e.preventDefault()
-    if (window.history.state && typeof window.history.state.idx === 'number' && window.history.state.idx > 0) {
-      navigate(-1)
-    } else {
+    if (e && typeof e.preventDefault === 'function') e.preventDefault()
+    if (mode === 'register') {
       setMode('login')
       setSelectedRole('farmer')
       setError('')
       setSuccessMsg('')
       window.scrollTo({ top: 0, behavior: 'smooth' })
-      navigate('/')
+      return
     }
+
+    const trail = getNavTrail()
+    const current = location.pathname + (location.search || '')
+    while (trail.length > 0 && trail[trail.length - 1] === current) {
+      trail.pop()
+    }
+    if (trail.length > 0) {
+      const prev = trail.pop()
+      saveNavTrail(trail)
+      if (prev && prev !== current) {
+        navigate(prev)
+        return
+      }
+    }
+    if (window.history.state && typeof window.history.state.idx === 'number' && window.history.state.idx > 0) {
+      navigate(-1)
+      return
+    }
+    navigate('/showcase')
   }
 
   return (

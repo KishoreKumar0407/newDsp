@@ -13,8 +13,8 @@ export default function DealerHomepage() {
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-v2v-gradient to-indigo-600 py-16 px-4">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-slate-900">AgriMap Dealer Marketplace</h1>
-          <p className="text-xl text-slate-800 mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white dark:text-white">AgriMap Dealer Marketplace</h1>
+          <p className="text-xl text-purple-100 dark:text-purple-100 mb-8">
             Wholesale produce for retailers and businesses. Bulk purchasing with AI-powered matching.
           </p>
           <div className="flex flex-wrap gap-4">
@@ -38,17 +38,17 @@ export default function DealerHomepage() {
       <div className="max-w-7xl mx-auto px-4 py-12">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-8 text-center">Why Choose AgriMap for Dealers?</h2>
         <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-white dark:bg-slate- dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-100">
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-100">
             <div className="text-4xl mb-4">📦</div>
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">Wholesale Pricing</h3>
             <p className="text-slate-600 dark:text-slate-400">Competitive bulk pricing with tiered discounts for large orders.</p>
           </div>
-          <div className="bg-white dark:bg-slate- dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-100">
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-100">
             <div className="text-4xl mb-4">🤖</div>
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">AI Matching</h3>
             <p className="text-slate-600 dark:text-slate-400">Find the perfect produce based on your business requirements and budget.</p>
           </div>
-          <div className="bg-white dark:bg-slate- dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-100">
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-100">
             <div className="text-4xl mb-4">🏭</div>
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">Processing Grade</h3>
             <p className="text-slate-600 dark:text-slate-400">Access processing-grade produce suitable for manufacturing and food processing.</p>
@@ -64,7 +64,7 @@ export default function DealerHomepage() {
             <Link
               key={key}
               to={`/dealer/products?category=${key}`}
-              className="bg-white dark:bg-slate- dark:bg-slate-800 p-6 rounded-xl shadow-md hover:shadow-lg transition-all border border-slate-100 hover:border-v2v-lavender text-center"
+              className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md hover:shadow-lg transition-all border border-slate-100 hover:border-v2v-lavender text-center"
             >
               <div className="text-5xl mb-3">{category.icon}</div>
               <h3 className="font-bold text-slate-900 dark:text-slate-100">{category.name}</h3>
@@ -94,7 +94,7 @@ export default function DealerHomepage() {
             </div>
             <Link
               to="/dealer/bulk-buying"
-              className="bg-white dark:bg-slate- dark:bg-slate-800 text-v2v-deep dark:text-purple-400 px-8 py-4 rounded-xl font-bold hover:bg-purple-50 dark:bg-purple-950/30 transition-colors text-center whitespace-nowrap"
+              className="bg-white dark:bg-slate-800 text-v2v-deep dark:text-purple-400 px-8 py-4 rounded-xl font-bold hover:bg-purple-50 dark:bg-purple-950/30 transition-colors text-center whitespace-nowrap"
             >
               Try Bulk Buying →
             </Link>
@@ -110,7 +110,7 @@ export default function DealerHomepage() {
             <Link
               key={product.id}
               to={`/dealer/product/${product.id}`}
-              className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md hover:shadow-lg transition-all border border-slate-100 overflow-hidden"
+              className="bg-white dark:bg-slate-800 rounded-xl shadow-md hover:shadow-lg transition-all border border-slate-100 overflow-hidden"
             >
               <div className="h-48 bg-gradient-to-br from-purple-100 to-indigo-100 flex items-center justify-center text-6xl">
                 {PRODUCE_CATEGORIES[product.category]?.icon || '🥬'}

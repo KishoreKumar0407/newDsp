@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PRODUCE_CATEGORIES, DEMO_PRODUCTS, INTENDED_USES, RIPENESS_STAGES, GRADE_CLASSIFICATIONS, addToCart, getCart } from '../../lib/consumerData.js'
 import { matchBuyerDemand } from '../../lib/marketIntelligence.js'
+import { useSmartGoBack } from '../../lib/navigationHistory.js'
 
 export default function BulkBuyingPage() {
+  const { handleGoBack } = useSmartGoBack()
   const [requirements, setRequirements] = useState({
     product: '',
     intendedUse: '',
@@ -44,16 +46,19 @@ export default function BulkBuyingPage() {
   const cartItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
-    <div className="min-h-screen bg-v2v-softwhite dark:bg-slate- dark:bg-slate-950">
+    <div className="min-h-screen bg-v2v-softwhite dark:bg-slate-950">
       {/* Header */}
-      <div className="bg-white dark:bg-slate- dark:bg-slate-800 dark:bg-slate- dark:bg-slate-900 shadow-sm border-b border-v2v-border dark:border-slate-700 dark:border-slate-800">
+      <div className="bg-white dark:bg-slate-800 shadow-sm border-b border-v2v-border dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/consumer" className="text-v2v-deep dark:text-purple-400 dark:text-purple-400 hover:text-v2v-lavender dark:text-purple-300 dark:hover:text-purple-300 font-bold">
+            <button
+              onClick={handleGoBack}
+              className="text-v2v-deep dark:text-purple-400 hover:text-v2v-lavender dark:hover:text-purple-300 font-bold flex items-center gap-1 cursor-pointer"
+            >
               ← Back to Home
-            </Link>
+            </button>
             <div className="flex items-center gap-4">
-              <span className="text-slate-600 dark:text-slate-400 dark:text-slate-400 dark:text-slate-400 dark:text-slate-400">AI-POWERED BULK BUYING (DEMO)</span>
+              <span className="text-slate-600 dark:text-slate-400">AI-POWERED BULK BUYING (DEMO)</span>
               {cartItemsCount > 0 && (
                 <Link
                   to="/consumer/cart"
@@ -69,8 +74,8 @@ export default function BulkBuyingPage() {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 dark:text-slate-100 mb-2">AI-Powered Bulk Buying</h1>
-          <p className="text-slate-600 dark:text-slate-400 dark:text-slate-400 dark:text-slate-400 dark:text-slate-400">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">AI-Powered Bulk Buying</h1>
+          <p className="text-slate-600 dark:text-slate-400">
             Specify your requirements and let our AI match you with the perfect produce lots.
             All data is simulated for demonstration purposes.
           </p>
@@ -79,21 +84,21 @@ export default function BulkBuyingPage() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Requirements Form */}
           <div className="lg:col-span-1">
-            <div className="bg-white dark:bg-slate- dark:bg-slate-800 dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-6 sticky top-4">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 dark:text-slate-100 mb-6 flex items-center gap-2">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 sticky top-4 border border-v2v-border dark:border-slate-700">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-6 flex items-center gap-2">
                 🎯 Your Requirements
               </h2>
 
               <div className="space-y-4">
                 {/* Product Category */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 dark:text-slate-300 dark:text-slate-300 mb-2">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                     Product Category *
                   </label>
                   <select
                     value={requirements.product}
                     onChange={(e) => setRequirements({ ...requirements, product: e.target.value })}
-                    className="w-full px-3 py-2 border border-v2v-border dark:border-slate-700 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-v2v-lavender dark:focus:ring-purple-400 dark:focus:ring-purple-400 focus:border-transparent dark:bg-slate- dark:bg-slate-900 dark:text-slate-100"
+                    className="w-full px-3 py-2 border border-v2v-border dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-v2v-lavender dark:focus:ring-purple-400 focus:border-transparent dark:bg-slate-900 dark:text-slate-100"
                   >
                     <option value="">Select category</option>
                     {Object.entries(PRODUCE_CATEGORIES).map(([key, category]) => (
@@ -210,7 +215,7 @@ export default function BulkBuyingPage() {
                     setMatchedProducts([])
                     setHasSearched(false)
                   }}
-                  className="w-full py-2 bg-slate- dark:bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 dark:text-slate-300 rounded-lg font-medium hover:bg-slate- dark:bg-slate-200 transition-colors"
+                  className="w-full py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg font-medium hover:bg-slate-200 dark:hover:bg-slate-300 transition-colors"
                 >
                   Clear Form
                 </button>
@@ -221,33 +226,33 @@ export default function BulkBuyingPage() {
           {/* Results */}
           <div className="lg:col-span-2">
             {!hasSearched ? (
-              <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-12 text-center">
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-12 text-center border border-v2v-border dark:border-slate-700">
                 <div className="text-6xl mb-4">🎯</div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">AI Bulk Buying Assistant</h3>
-                <p className="text-slate-600 dark:text-slate-400 dark:text-slate-400 max-w-md mx-auto">
+                <p className="text-slate-600 dark:text-slate-400 max-w-md mx-auto">
                   Fill in your requirements on the left and click "Find Matching Products" to get AI-recommended produce lots that match your needs.
                 </p>
-                <div className="mt-6 p-4 bg-orange-50 rounded-lg border border-orange-200 max-w-md mx-auto">
+                <div className="mt-6 p-4 bg-orange-50 dark:bg-orange-950/40 rounded-lg border border-orange-200 dark:border-orange-800/50 max-w-md mx-auto">
                   <p className="text-sm text-v2v-lavender dark:text-purple-300">
                     <strong>How it works:</strong> Our AI analyzes product characteristics, quality scores, market prices, and your specific requirements to find the best matches with suitability scores.
                   </p>
                 </div>
               </div>
             ) : matchedProducts.length === 0 ? (
-              <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-12 text-center">
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-12 text-center border border-v2v-border dark:border-slate-700">
                 <div className="text-6xl mb-4">🔍</div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">No Matches Found</h3>
-                <p className="text-slate-600 dark:text-slate-400 dark:text-slate-400 max-w-md mx-auto">
+                <p className="text-slate-600 dark:text-slate-400 max-w-md mx-auto">
                   Try adjusting your requirements - increase quantity range, change ripeness preference, or adjust budget constraints.
                 </p>
               </div>
             ) : (
               <div className="space-y-6">
-                <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-6">
+                <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-v2v-border dark:border-slate-700">
                   <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
                     Found {matchedProducts.length} Matching Products
                   </h2>
-                  <p className="text-slate-600 dark:text-slate-400 dark:text-slate-400">
+                  <p className="text-slate-600 dark:text-slate-400">
                     Sorted by AI suitability score. All data is simulated for demonstration.
                   </p>
                 </div>
@@ -255,7 +260,7 @@ export default function BulkBuyingPage() {
                 {matchedProducts.map((product, idx) => (
                   <div
                     key={product.id}
-                    className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-6 border-l-4 border-orange-500"
+                    className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border-l-4 border-orange-500 border-y border-r border-v2v-border dark:border-slate-700"
                   >
                     <div className="flex flex-col lg:flex-row gap-6">
                       {/* Product Image */}

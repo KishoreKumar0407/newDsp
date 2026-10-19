@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PRODUCE_CATEGORIES, DEMO_PRODUCTS, INTENDED_USES, RIPENESS_STAGES, GRADE_CLASSIFICATIONS, addToCart, getCart } from '../../lib/consumerData.js'
 import { matchBuyerDemand } from '../../lib/marketIntelligence.js'
+import { useSmartGoBack } from '../../lib/navigationHistory.js'
 
 export default function DealerBulkBuyingPage() {
+  const { handleGoBack } = useSmartGoBack()
   const [requirements, setRequirements] = useState({
     product: '',
     intendedUse: '',
@@ -45,12 +47,15 @@ export default function DealerBulkBuyingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br bg-v2v-softwhite">
-      <div className="bg-white dark:bg-slate- dark:bg-slate-800 shadow-sm border-b border-slate-200">
+      <div className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/dealer" className="text-v2v-deep dark:text-purple-400 hover:text-v2v-deep dark:text-purple-400 font-bold">
+            <button
+              onClick={handleGoBack}
+              className="text-v2v-deep dark:text-purple-400 hover:text-v2v-lavender dark:hover:text-purple-300 font-bold flex items-center gap-1 cursor-pointer"
+            >
               ← Back to Home
-            </Link>
+            </button>
             <div className="flex items-center gap-4">
               <span className="text-slate-600 dark:text-slate-400">AI-POWERED BULK BUYING (DEMO)</span>
               {cartItemsCount > 0 && (
@@ -77,7 +82,7 @@ export default function DealerBulkBuyingPage() {
 
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1">
-            <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-6 sticky top-4">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 sticky top-4">
               <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-6 flex items-center gap-2">
                 🎯 Your Requirements
               </h2>
@@ -177,7 +182,7 @@ export default function DealerBulkBuyingPage() {
 
           <div className="lg:col-span-2">
             {!hasSearched ? (
-              <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-12 text-center">
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-12 text-center">
                 <div className="text-6xl mb-4">🎯</div>
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">Find Your Perfect Produce</h2>
                 <p className="text-slate-600 dark:text-slate-400 mb-4">
@@ -190,7 +195,7 @@ export default function DealerBulkBuyingPage() {
                 </div>
               </div>
             ) : matchedProducts.length === 0 ? (
-              <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-12 text-center">
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-12 text-center">
                 <div className="text-6xl mb-4">🔍</div>
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">No matching products found</h2>
                 <p className="text-slate-600 dark:text-slate-400 mb-4">Try adjusting your requirements or filters</p>
@@ -208,7 +213,7 @@ export default function DealerBulkBuyingPage() {
                 </h2>
                 <div className="space-y-4">
                   {matchedProducts.map((product) => (
-                    <div key={product.id} className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-lg p-6 border-l-4 border-v2v-lavender">
+                    <div key={product.id} className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6 border-l-4 border-v2v-lavender">
                       <div className="flex flex-col lg:flex-row gap-4">
                         <div className="lg:w-48 h-48 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center text-6xl flex-shrink-0">
                           {PRODUCE_CATEGORIES[product.category]?.icon || '🥬'}

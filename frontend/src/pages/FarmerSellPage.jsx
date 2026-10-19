@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { PRODUCE_CATEGORIES, GRADE_CLASSIFICATIONS, RIPENESS_STAGES, addFarmerProduct, getFarmerProductsByFarmer } from '../lib/consumerData.js'
+import { PRODUCE_CATEGORIES, GRADE_CLASSIFICATIONS, RIPENESS_STAGES, addFarmerProduct, getFarmerProductsByFarmer, deleteFarmerProduct } from '../lib/consumerData.js'
 import { getPricingRecommendation } from '../lib/aiPricingEngine.js'
+import { useSmartGoBack } from '../lib/navigationHistory.js'
 
 export default function FarmerSellPage() {
   const { user } = useAuth()
+  const { handleGoBack } = useSmartGoBack()
   const [formData, setFormData] = useState({
     name: '',
     variety: '',
@@ -121,7 +123,6 @@ export default function FarmerSellPage() {
 
   const handleDelete = (productId) => {
     if (confirm('Are you sure you want to delete this product?')) {
-      const { deleteFarmerProduct } = require('../lib/consumerData.js')
       deleteFarmerProduct(productId)
       loadMyProducts()
     }
@@ -130,6 +131,14 @@ export default function FarmerSellPage() {
   return (
     <div className="min-h-screen bg-v2v-softwhite dark:bg-slate-950">
       <div className="max-w-7xl mx-auto px-4 py-8">
+        <button
+          onClick={handleGoBack}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 mb-6 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-v2v-purple hover:text-white dark:hover:bg-purple-900 border border-slate-200 dark:border-slate-700 shadow-sm cursor-pointer transition-all"
+        >
+          <span className="text-sm font-black">←</span>
+          <span>Back to Farmland Studio</span>
+        </button>
+
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">Sell Your Produce</h1>
           <p className="text-slate-600 dark:text-slate-400">

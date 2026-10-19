@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { getCart, updateCartQuantity, removeFromCart, clearCart, getCartTotal } from '../../lib/consumerData.js'
+import { useSmartGoBack } from '../../lib/navigationHistory.js'
 
 export default function CartPage() {
+  const { handleGoBack } = useSmartGoBack()
   const [cart, setCart] = useState([])
   const navigate = useNavigate()
 
@@ -43,12 +45,15 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br bg-v2v-softwhite">
       {/* Header */}
-      <div className="bg-white dark:bg-slate- dark:bg-slate-800 shadow-sm border-b border-slate-200">
+      <div className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/consumer/products" className="text-v2v-deep dark:text-purple-400 hover:text-v2v-deep dark:text-purple-400 font-bold">
+            <button
+              onClick={handleGoBack}
+              className="text-v2v-deep dark:text-purple-400 hover:text-v2v-lavender dark:hover:text-purple-300 font-bold flex items-center gap-1 cursor-pointer"
+            >
               ← Continue Shopping
-            </Link>
+            </button>
             <span className="text-slate-600 dark:text-slate-400">SHOPPING CART (DEMO)</span>
           </div>
         </div>
@@ -63,7 +68,7 @@ export default function CartPage() {
         </div>
 
         {cart.length === 0 ? (
-          <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-12 text-center">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-12 text-center">
             <div className="text-6xl mb-4">🛒</div>
             <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">Your cart is empty</h2>
             <p className="text-slate-600 dark:text-slate-400 mb-6">Start shopping to add items to your cart</p>
@@ -81,7 +86,7 @@ export default function CartPage() {
               {cart.map(item => (
                 <div
                   key={item.productId}
-                  className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-6 flex flex-col sm:flex-row gap-4"
+                  className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 flex flex-col sm:flex-row gap-4"
                 >
                   {/* Product Icon */}
                   <div className="w-24 h-24 bg-gradient-to-br from-green-100 to-green-200 rounded-lg flex items-center justify-center text-4xl flex-shrink-0">
@@ -104,14 +109,14 @@ export default function CartPage() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleUpdateQuantity(item.productId, item.quantity - 1)}
-                          className="w-8 h-8 bg-slate- dark:bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center font-bold hover:bg-slate- dark:bg-slate-200 transition-colors"
+                          className="w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center font-bold hover:bg-slate-200 dark:bg-slate-300 transition-colors"
                         >
                           -
                         </button>
                         <span className="w-12 text-center font-bold text-slate-900 dark:text-slate-100">{item.quantity}</span>
                         <button
                           onClick={() => handleUpdateQuantity(item.productId, item.quantity + 1)}
-                          className="w-8 h-8 bg-slate- dark:bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center font-bold hover:bg-slate- dark:bg-slate-200 transition-colors"
+                          className="w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center font-bold hover:bg-slate-200 dark:bg-slate-300 transition-colors"
                         >
                           +
                         </button>
@@ -146,7 +151,7 @@ export default function CartPage() {
 
             {/* Order Summary */}
             <div className="lg:col-span-1">
-              <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-6 sticky top-4">
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 sticky top-4">
                 <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-6">Order Summary</h2>
 
                 <div className="space-y-4 mb-6">
@@ -186,7 +191,7 @@ export default function CartPage() {
 
                 <Link
                   to="/consumer/products"
-                  className="block w-full py-3 mt-3 bg-slate- dark:bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 dark:text-slate-300 rounded-lg font-medium hover:bg-slate- dark:bg-slate-200 transition-colors text-center"
+                  className="block w-full py-3 mt-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 dark:text-slate-300 rounded-lg font-medium hover:bg-slate-200 dark:bg-slate-300 transition-colors text-center"
                 >
                   Continue Shopping
                 </Link>

@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { PRODUCE_CATEGORIES, DEMO_PRODUCTS, GRADE_CLASSIFICATIONS, RIPENESS_STAGES, addToCart, getCart, getAllProducts } from '../../lib/consumerData.js'
 import { getPricingRecommendation } from '../../lib/aiPricingEngine.js'
+import { useSmartGoBack } from '../../lib/navigationHistory.js'
 
 export default function ConsumerProductsPage() {
+  const { handleGoBack } = useSmartGoBack()
   const [searchParams] = useSearchParams()
   const categoryParam = searchParams.get('category')
   
@@ -71,9 +73,12 @@ export default function ConsumerProductsPage() {
       <div className="bg-white dark:bg-slate-900 shadow-sm border-b border-v2v-border dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/consumer" className="text-v2v-deep dark:text-purple-400 hover:text-v2v-lavender dark:hover:text-purple-300 font-bold">
+            <button
+              onClick={handleGoBack}
+              className="text-v2v-deep dark:text-purple-400 hover:text-v2v-lavender dark:hover:text-purple-300 font-bold flex items-center gap-1 cursor-pointer"
+            >
               ← Back to Home
-            </Link>
+            </button>
             <div className="flex items-center gap-4">
               <span className="text-slate-600 dark:text-slate-400">DEMO MARKETPLACE</span>
               {cartItemsCount > 0 && (

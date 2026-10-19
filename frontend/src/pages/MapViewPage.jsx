@@ -20,6 +20,7 @@ import VerificationDrawer from '../components/verification/VerificationDrawer'
 import SurveyEntryPanel from '../components/survey/SurveyEntryPanel'
 import AIInsightsPanel from '../components/ai/AIInsightsPanel'
 import toast from '../components/ui/Toast'
+import { useSmartGoBack } from '../lib/navigationHistory.js'
 
 // Fix Leaflet default icon paths broken by bundlers
 delete L.Icon.Default.prototype._getIconUrl
@@ -79,6 +80,7 @@ function FitBounds({ geojson }) {
 export default function MapViewPage() {
   const { fieldId } = useParams()
   const { user } = useAuth()
+  const { handleGoBack } = useSmartGoBack()
 
   const [geojson, setGeojson]       = useState(null)
   const [field, setField]           = useState(null)
@@ -174,12 +176,9 @@ export default function MapViewPage() {
   return (
     <div className="flex flex-col h-dvh">
       {/* Toolbar */}
-      <div className="flex items-center gap-3 px-4 py-2 bg-white border-b border-gray-200 flex-shrink-0 overflow-x-auto">
-        <Link to={field?.project_id ? `/projects/${field.project_id}` : '/dashboard'}
-          className="text-sm text-gray-500 hover:text-brand-600 flex-shrink-0">
-          ← Back
-        </Link>
-        <span className="text-sm font-medium text-gray-900 flex-shrink-0 truncate max-w-xs">
+      <div className="flex items-center gap-3 px-4 py-2 bg-white border-b border-gray-200 flex-shrink-0 overflow-x-auto dark:bg-slate-800 dark:border-slate-600">
+        <button onClick={handleGoBack} className="text-sm text-gray-500 hover:text-brand-600 flex-shrink-0">← Back</button>
+        <span className="text-sm font-medium text-gray-900 dark:text-slate-100 flex-shrink-0 truncate max-w-xs">
           {field?.name ?? 'Loading…'}
         </span>
         <div className="flex-1" />

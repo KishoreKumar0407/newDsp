@@ -12,7 +12,7 @@ export default function OrdersPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br bg-v2v-softwhite">
       {/* Header */}
-      <div className="bg-white dark:bg-slate- dark:bg-slate-800 shadow-sm border-b border-slate-200">
+      <div className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link to="/consumer" className="text-v2v-deep dark:text-purple-400 hover:text-v2v-deep dark:text-purple-400 font-bold">
@@ -30,7 +30,7 @@ export default function OrdersPage() {
         </div>
 
         {orders.length === 0 ? (
-          <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-12 text-center">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-12 text-center">
             <div className="text-6xl mb-4">📦</div>
             <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">No orders yet</h2>
             <p className="text-slate-600 dark:text-slate-400 mb-6">Start shopping to see your orders here</p>
@@ -44,7 +44,7 @@ export default function OrdersPage() {
         ) : (
           <div className="space-y-4">
             {orders.map((order) => (
-              <div key={order.id} className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-6 border-l-4 border-v2v-lavender">
+              <div key={order.id} className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border-l-4 border-v2v-lavender">
                 <div className="flex flex-col md:flex-row justify-between mb-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
@@ -53,7 +53,7 @@ export default function OrdersPage() {
                         order.status === 'confirmed' ? 'bg-purple-100 text-v2v-deep dark:text-purple-400' :
                         order.status === 'shipped' ? 'bg-blue-100 text-blue-700' :
                         order.status === 'delivered' ? 'bg-purple-100 text-purple-700 dark:text-purple-300' :
-                        'bg-slate- dark:bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 dark:text-slate-300'
+                        'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
                       }`}>
                         {order.status.toUpperCase()}
                       </span>
@@ -72,7 +72,7 @@ export default function OrdersPage() {
                   <h4 className="font-bold text-slate-900 dark:text-slate-100 mb-2">Items:</h4>
                   <div className="space-y-2">
                     {order.items.map((item, index) => (
-                      <div key={index} className="flex justify-between text-sm bg-slate- dark:bg-slate-50 dark:bg-slate-900 p-2 rounded">
+                      <div key={index} className="flex justify-between text-sm bg-slate-50 dark:bg-slate-900 p-2 rounded">
                         <span>{item.name} ({item.quantity} kg)</span>
                         <span>₹{(item.pricePerKg * item.quantity).toLocaleString()}</span>
                       </div>

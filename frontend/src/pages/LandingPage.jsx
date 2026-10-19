@@ -4,18 +4,12 @@ import V2VLogo from '../components/common/V2VLogo'
 import { useAuth } from '../contexts/AuthContext'
 import ThemeToggle from '../components/common/ThemeToggle'
 
+import { useSmartGoBack } from '../lib/navigationHistory'
+
 export default function LandingPage() {
   const { user, loginDemo, logout } = useAuth()
   const navigate = useNavigate()
-
-  const handleGoBack = (e) => {
-    if (e) e.preventDefault()
-    if (window.history.state && typeof window.history.state.idx === 'number' && window.history.state.idx > 0) {
-      navigate(-1)
-    } else {
-      navigate('/')
-    }
-  }
+  const { handleGoBack } = useSmartGoBack()
 
   const handleLaunchRole = (role) => {
     loginDemo(role)

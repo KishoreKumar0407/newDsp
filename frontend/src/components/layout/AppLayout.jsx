@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import { useNavigateWithLoader } from '../../contexts/NavigationLoaderContext'
 import V2VLogo from '../common/V2VLogo'
 import ThemeToggle from '../common/ThemeToggle'
+import { useSmartGoBack } from '../../lib/navigationHistory'
 
 const NAV_LINKS = [
   // ── FARMER (strictly restricted to their own land) ──
@@ -65,19 +66,7 @@ export default function AppLayout() {
     return location.pathname === to
   }
 
-  const handleGoBack = (e) => {
-    if (e && e.preventDefault) e.preventDefault()
-    // Check if there's real browser history to go back to
-    const hasHistory =
-      window.history.state &&
-      typeof window.history.state.idx === 'number' &&
-      window.history.state.idx > 0
-    if (hasHistory) {
-      navigate(-1)
-    } else {
-      navigate(homeLink, { replace: true })
-    }
-  }
+  const { handleGoBack } = useSmartGoBack()
 
   const handleLogoClick = (e) => {
     if (e) {

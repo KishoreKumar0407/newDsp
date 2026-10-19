@@ -3,8 +3,10 @@ import { Link, useParams } from 'react-router-dom'
 import { DEMO_PRODUCTS, PRODUCE_CATEGORIES, GRADE_CLASSIFICATIONS, RIPENESS_STAGES, addToCart, getCart } from '../../lib/consumerData.js'
 import { getPricingRecommendation, calculateTotalCost } from '../../lib/aiPricingEngine.js'
 import { getMarketPriceComparison, getDemandAnalysis } from '../../lib/marketIntelligence.js'
+import { useSmartGoBack } from '../../lib/navigationHistory.js'
 
 export default function ProductDetailPage() {
+  const { handleGoBack } = useSmartGoBack()
   const { id } = useParams()
   const [product, setProduct] = useState(null)
   const [quantity, setQuantity] = useState(1)
@@ -46,12 +48,15 @@ export default function ProductDetailPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br bg-v2v-softwhite">
       {/* Header */}
-      <div className="bg-white dark:bg-slate- dark:bg-slate-800 shadow-sm border-b border-slate-200">
+      <div className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/consumer/products" className="text-v2v-deep dark:text-purple-400 hover:text-v2v-deep dark:text-purple-400 font-bold">
+            <button
+              onClick={handleGoBack}
+              className="text-v2v-deep dark:text-purple-400 hover:text-v2v-lavender dark:hover:text-purple-300 font-bold flex items-center gap-1 cursor-pointer"
+            >
               ← Back to Products
-            </Link>
+            </button>
             <span className="text-slate-600 dark:text-slate-400">DEMO PRODUCT DETAILS</span>
           </div>
         </div>
@@ -60,7 +65,7 @@ export default function ProductDetailPage() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Product Image */}
-          <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-8">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-8">
             <div className="h-80 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-lg flex items-center justify-center text-9xl">
               {PRODUCE_CATEGORIES[product.category]?.icon || '🥬'}
             </div>
@@ -84,26 +89,26 @@ export default function ProductDetailPage() {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-lg p-4 shadow-sm">
+              <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm">
                 <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Farmer</p>
                 <p className="font-bold text-slate-900 dark:text-slate-100">{product.farmerName}</p>
               </div>
-              <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-lg p-4 shadow-sm">
+              <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm">
                 <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Location</p>
                 <p className="font-bold text-slate-900 dark:text-slate-100">{product.location}</p>
               </div>
-              <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-lg p-4 shadow-sm">
+              <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm">
                 <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Harvest Date</p>
                 <p className="font-bold text-slate-900 dark:text-slate-100">{product.harvestDate}</p>
               </div>
-              <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-lg p-4 shadow-sm">
+              <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm">
                 <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Shelf Life</p>
                 <p className="font-bold text-slate-900 dark:text-slate-100">{product.shelfLifeDays} days</p>
               </div>
             </div>
 
             {/* Grade and Ripeness */}
-            <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-lg p-4 shadow-sm">
+            <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Grade</p>
@@ -155,7 +160,7 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Market Comparison */}
-            <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200">
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200">
               <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
                 📊 Market Comparison
               </h3>
@@ -179,7 +184,7 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Demand Analysis */}
-            <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200">
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200">
               <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
                 📈 Demand Analysis
               </h3>
@@ -203,7 +208,7 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Quantity and Add to Cart */}
-            <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200">
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200">
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 dark:text-slate-300 mb-2">Quantity (kg)</label>
@@ -232,7 +237,7 @@ export default function ProductDetailPage() {
                 className={`w-full py-3 rounded-lg font-bold ${
                   quantity <= product.availableQuantity
                     ? 'bg-green-600 text-white hover:bg-green-700'
-                    : 'bg-slate- dark:bg-slate-300 text-slate-500 dark:text-slate-400 cursor-not-allowed'
+                    : 'bg-slate-300 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed'
                 } transition-colors`}
               >
                 Add to Cart

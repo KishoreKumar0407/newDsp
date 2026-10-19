@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { PRODUCE_CATEGORIES, DEMO_PRODUCTS, GRADE_CLASSIFICATIONS, RIPENESS_STAGES, addToCart, getCart, getAllProducts } from '../../lib/consumerData.js'
 import { getPricingRecommendation } from '../../lib/aiPricingEngine.js'
+import { useSmartGoBack } from '../../lib/navigationHistory.js'
 
 export default function DealerProductsPage() {
+  const { handleGoBack } = useSmartGoBack()
   const [searchParams] = useSearchParams()
   const categoryParam = searchParams.get('category')
   
@@ -60,12 +62,15 @@ export default function DealerProductsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br bg-v2v-softwhite">
-      <div className="bg-white dark:bg-slate- dark:bg-slate-800 shadow-sm border-b border-slate-200">
+      <div className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/dealer" className="text-v2v-deep dark:text-purple-400 hover:text-v2v-deep dark:text-purple-400 font-bold">
+            <button
+              onClick={handleGoBack}
+              className="text-v2v-deep dark:text-purple-400 hover:text-v2v-lavender dark:hover:text-purple-300 font-bold flex items-center gap-1 cursor-pointer"
+            >
               ← Back to Home
-            </Link>
+            </button>
             <div className="flex items-center gap-4">
               <span className="text-slate-600 dark:text-slate-400">DEALER MARKETPLACE</span>
               {cartItemsCount > 0 && (
@@ -89,7 +94,7 @@ export default function DealerProductsPage() {
 
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="lg:w-64 flex-shrink-0">
-            <div className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md p-6 sticky top-4">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 sticky top-4">
               <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">Filters</h2>
 
               <div className="mb-6">
@@ -173,7 +178,7 @@ export default function DealerProductsPage() {
                   setSelectedRipeness('all')
                   setPriceRange({ min: 0, max: 500 })
                 }}
-                className="w-full py-2 bg-slate- dark:bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 dark:text-slate-300 rounded-lg font-medium hover:bg-slate- dark:bg-slate-200 transition-colors"
+                className="w-full py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg font-medium hover:bg-slate-200 dark:hover:bg-slate-300 transition-colors"
               >
                 Clear Filters
               </button>
@@ -190,7 +195,7 @@ export default function DealerProductsPage() {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProducts.map(product => (
-                <div key={product.id} className="bg-white dark:bg-slate- dark:bg-slate-800 rounded-xl shadow-md hover:shadow-lg transition-all border border-slate-100 overflow-hidden">
+                <div key={product.id} className="bg-white dark:bg-slate-800 rounded-xl shadow-md hover:shadow-lg transition-all border border-slate-100 overflow-hidden">
                   <div className="h-48 bg-gradient-to-br from-purple-100 to-indigo-100 flex items-center justify-center text-6xl">
                     {PRODUCE_CATEGORIES[product.category]?.icon || '🥬'}
                   </div>

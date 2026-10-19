@@ -13,8 +13,8 @@ export default function ConsumerHomepage() {
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-v2v-gradient to-indigo-600 py-16 px-4">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-slate-900">AgriMap Consumer Marketplace</h1>
-          <p className="text-xl text-slate-800 mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-v2v-lavender dark:text-v2v-lightlavender">AgriMap Consumer Marketplace</h1>
+          <p className="text-xl text-v2v-softlavender dark:text-v2v-lightlavender mb-8">
             Fresh produce directly from farmers. Retail shopping for consumers.
           </p>
           <div className="flex flex-wrap gap-4">
