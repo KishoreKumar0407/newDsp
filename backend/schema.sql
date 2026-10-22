@@ -376,3 +376,76 @@ CREATE TABLE IF NOT EXISTS sensor_data (
 CREATE INDEX IF NOT EXISTS idx_sensor_data_geom ON sensor_data USING gist(geom);
 CREATE INDEX IF NOT EXISTS idx_sensor_data_device_id ON sensor_data(device_id);
 CREATE INDEX IF NOT EXISTS idx_sensor_data_field_id ON sensor_data(field_id);
+
+-- -------------------------------------------------------------
+-- 9. Demand Insights Tables (Phase 1: Scoring Model)
+-- -------------------------------------------------------------
+-- --- 9.1. Products Table ---
+CREATE TABLE products (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) UNIQUE NOT NULL,
+    category VARCHAR(50) NOT NULL CHECK (category IN ('fruit', 'vegetable')),
+    unit VARCHAR(50) NOT NULL DEFAULT 'kg',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TRIGGER trigger_update_products_updated_at
+    BEFORE UPDATE ON products
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- --- 9.2. TN Districts Table ---
+CREATE TABLE tn_districts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) UNIQUE NOT NULL,
+    code VARCHAR(10) UNIQUE NOT NULL,
+    population INTEGER NOT NULL,
+    urban_ratio NUMERIC(5,4) NOT NULL,
+    hotels_count INTEGER DEFAULT 0,
+    restaurants_count INTEGER DEFAULT 0,
+    markets_count INTEGER DEFAULT 0,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TRIGGER trigger_update_tn_districts_updated_at
+    BEFORE UPDATE ON tn_districts
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- --- 9.3. District Product Supply Table ---
+CREATE TABLE district_product_supply (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    district_id UUID NOT NULL REFERENCES tn_districts(id) ON DELETE CASCADE,
+    product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    local_production_level VARCHAR(20) NOT NULL CHECK (local_production_level IN ('low', 'medium', 'high')),
+    growing_season_months INTEGER[] NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE(district_id, product_id)
+);
+
+CREATE TRIGGER trigger_update_district_product_supply_updated_at
+    BEFORE UPDATE ON district_product_supply
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- --- 9.4. Demand Insights Cache Table ---
+CREATE TABLE demand_insights (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    district_id UUID NOT NULL REFERENCES tn_districts(id) ON DELETE CASCADE,
+    horizon_days INTEGER NOT NULL CHECK (horizon_days IN (7, 30)),
+    demand_score NUMERIC(5,2) NOT NULL,
+    demand_level VARCHAR(20) NOT NULL CHECK (demand_level IN ('High', 'Medium', 'Low')),
+    predicted_quantity_kg NUMERIC(12,2),
+    confidence_level VARCHAR(20) NOT NULL CHECK (confidence_level IN ('High', 'Medium', 'Low')),
+    factor_breakdown JSONB NOT NULL DEFAULT '{}'::jsonb,
+    prediction_method VARCHAR(50) NOT NULL DEFAULT 'scoring',
+    model_version VARCHAR(50),
+    cached_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE(product_id, district_id, horizon_days)
+);
+
+CREATE INDEX idx_demand_insights_product_district ON demand_insights(product_id, district_id);

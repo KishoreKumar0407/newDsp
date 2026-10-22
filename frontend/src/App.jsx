@@ -19,6 +19,7 @@ import MarketplacePage from './pages/MarketplacePage'
 import SurveyorsManagementPage from './pages/SurveyorsManagementPage'
 import FarmerSellPage from './pages/FarmerSellPage'
 import SurveyorSellPage from './pages/SurveyorSellPage'
+import DemandInsightsPage from './pages/admin/DemandInsightsPage'
 
 // Consumer Portal Pages
 import ConsumerHomepage from './pages/consumer/ConsumerHomepage'
@@ -98,6 +99,7 @@ export default function App() {
               {/* Admin only (Surveyor Creation & Management) */}
               <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
                 <Route path="/admin/surveyors" element={<SurveyorsManagementPage />} />
+                <Route path="/admin/demand-insights" element={<DemandInsightsPage />} />
                 <Route path="/users" element={<UsersPage />} />
               </Route>
             </Route>

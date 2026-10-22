@@ -10,6 +10,10 @@ from app.models.observation import Observation
 from app.models.photo import Photo
 from app.models.device import Device
 from app.models.sensor_data import SensorData
+from app.models.product import Product
+from app.models.tn_district import TNDistrict
+from app.models.district_product_supply import DistrictProductSupply
+from app.models.demand_insight import DemandInsight
 
 __all__ = [
     "Base",
@@ -24,4 +28,8 @@ __all__ = [
     "Photo",
     "Device",
     "SensorData",
+    "Product",
+    "TNDistrict",
+    "DistrictProductSupply",
+    "DemandInsight",
 ]
