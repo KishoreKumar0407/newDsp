@@ -38,6 +38,7 @@ psql -U postgres -d agrimap_dsp -f seed.sql
 # 4. Configure environment
 cp .env.example .env
 # Edit .env with your database credentials
+# Set OPENAI_API_KEY in .env to enable OpenAI-powered AI features (optional)
 
 # 5. Run the server
 uvicorn app.main:app --reload --port 8000
@@ -50,6 +51,9 @@ uvicorn app.main:app --reload --port 8000
 Once running, visit:
 - **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
 - **ReDoc**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+
+AI features use rule-based/keyword fallbacks when `OPENAI_API_KEY` is unset. Keep
+the real key in `backend/.env`; do not commit it or send it from the frontend.
 
 ### Authentication
 

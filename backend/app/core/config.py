@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str = "agrimap-dsp-dev-secret-change-in-production-2026"
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRE_MINUTES: int = 480
+
+    # Optional OpenAI integration
+    OPENAI_API_KEY: str = ""
     
     # File Uploads
     UPLOAD_DIR: str = "./uploads"

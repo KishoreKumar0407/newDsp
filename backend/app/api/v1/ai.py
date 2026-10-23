@@ -6,11 +6,11 @@ Skills used: LangChain, RAG, FAISS, OpenAI API, Embeddings, Semantic Search
 """
 import uuid
 import logging
-from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.core.database import get_db
 from app.core.security import get_current_user
 from app.models.user import User
@@ -27,13 +27,11 @@ router = APIRouter(prefix="/ai", tags=["AI Analysis"])
 class QueryRequest(BaseModel):
     """Natural language query request."""
     question: str
-    api_key: Optional[str] = None
 
 
 @router.post("/analyze-field/{field_id}")
 def ai_analyze_field(
     field_id: uuid.UUID,
-    api_key: Optional[str] = Query(None, description="OpenAI API key (optional, uses rule-based without it)"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -47,7 +45,7 @@ def ai_analyze_field(
     Works without OpenAI API key (rule-based). With API key, uses GPT-4o-mini.
     """
     try:
-        analysis = analyze_field(field_id, db, api_key)
+        analysis = analyze_field(field_id, db, settings.OPENAI_API_KEY or None)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -90,7 +88,7 @@ def ai_natural_language_query(
     
     Uses FAISS + OpenAI embeddings with API key, or keyword search without.
     """
-    result = query_with_ai(request.question, db, request.api_key)
+    result = query_with_ai(request.question, db, settings.OPENAI_API_KEY or None)
 
     logger.info("AI query by %s: '%s' → %s",
                 current_user.email, request.question, result.get("answer_type"))
@@ -100,7 +98,6 @@ def ai_natural_language_query(
 @router.post("/summarize-project/{project_id}")
 def ai_summarize_project(
     project_id: uuid.UUID,
-    api_key: Optional[str] = Query(None, description="OpenAI API key (optional)"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -109,7 +106,7 @@ def ai_summarize_project(
     Includes field counts, verification progress, resource breakdown.
     """
     try:
-        summary = summarize_project(project_id, db, api_key)
+        summary = summarize_project(project_id, db, settings.OPENAI_API_KEY or None)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -119,7 +116,6 @@ def ai_summarize_project(
 
 @router.post("/build-index")
 def build_knowledge_index(
-    api_key: Optional[str] = Query(None, description="OpenAI API key for vector embeddings"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -130,7 +126,7 @@ def build_knowledge_index(
     Without: builds keyword index (basic text search).
     """
     kb = KnowledgeBase()
-    result = kb.build_index(db, api_key)
+    result = kb.build_index(db, settings.OPENAI_API_KEY or None)
 
     logger.info("Knowledge base rebuilt by %s: %s", current_user.email, result.get("index_type"))
     return result
